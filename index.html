@@ -192,7 +192,7 @@ render();
 function render(){
 lista.innerHTML=dados.map((d,i)=>`
 <div class="linha">
-<span>${d.oc} - ${d.eq} - ${d.st}</span>
+<span>${d.oc} - ${d.eq} - ${d.st} | CI:${d.ci}</span>
 <div class="botoes">
 <button class="editar" onclick="editar(${i})">Editar</button>
 <button class="excluir" onclick="excluir(${i})">X</button>
@@ -233,7 +233,7 @@ let statusCount={TRABALHANDO:0,"EM ESPERA":0,FINALIZADA:0};
 
 listaOrdenada.forEach(d=>{
 if(d.st=="TRABALHANDO"||d.st=="EM ESPERA"){
-totalCI+=d.ci;
+totalCI += Number(d.ci) || 0;
 }
 statusCount[d.st]++;
 });
@@ -255,7 +255,7 @@ ${new Date(d.data).toLocaleString()}
 
 <div class="cards">
 <div class="cardResumo"><b>Total Ocorrências</b><br>${totalOc}</div>
-<div class="cardResumo"><b>CI</b><br>${totalCI}</div>
+<div class="cardResumo"><b>CI Total</b><br>${totalCI}</div>
 <div class="cardResumo"><b>Trabalhando</b><br>${statusCount["TRABALHANDO"]}</div>
 <div class="cardResumo"><b>Em Espera</b><br>${statusCount["EM ESPERA"]}</div>
 <div class="cardResumo"><b>Finalizada</b><br>${statusCount["FINALIZADA"]}</div>
