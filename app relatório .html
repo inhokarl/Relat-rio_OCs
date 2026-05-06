@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>App Ocorrências</title>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+body{font-family:Arial;background:#f0f4f8;padding:10px}
+h2{color:#003A8F}
+
+input,select{
+padding:6px;margin:4px;width:150px;
+border:1px solid #ccc;border-radius:5px
+}
+
+button{
+padding:8px 12px;margin:5px;
+border:none;border-radius:6px;
+background:#003A8F;color:#fff;
+font-weight:bold;cursor:pointer
+}
+
+.card{
+background:#fff;padding:15px;
+border-radius:12px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+margin-top:10px
+}
+
+.linha{
+padding:6px;border-bottom:1px solid #eee;
+display:flex;justify-content:space-between;
+font-size:14px
+}
+
+.bolinha{
+width:10px;height:10px;border-radius:50%;
+display:inline-block;margin-right:6px
+}
+
+.vermelho{background:#e53935}
+.laranja{background:#fb8c00}
+.verde{background:#43a047}
+
+#tela2{display:none}
+
+.titulo{
+font-weight:bold;text-align:center;
+font-size:20px;color:#003A8F
+}
+
+.data{
+text-align:center;
+font-size:11px;color:#666;
+margin-bottom:10px
+}
+
+.cards{
+display:flex;gap:10px;flex-wrap:wrap;
+margin-top:10px
+}
+
+.cardResumo{
+flex:1;
+background:#e6f0ff;
+padding:10px;
+border-radius:8px;
+text-align:center;
+font-size:13px
+}
+
+.rodape{
+font-size:11px;
+text-align:center;
+margin-top:10px;
+font-weight:bold
+}
+
+.excluir{
+background:red;
+color:#fff;
+border:none;
+border-radius:5px;
+padding:2px 6px;
+cursor:pointer
+}
+</style>
+</head>
+
+<body>
+
+<div id="tela1">
+
+<h2>Cadastro</h2>
+
+<input id="oc" placeholder="Ocorrência">
+<input id="eq" placeholder="Equipe">
+
+<select id="st">
+<option>TRABALHANDO</option>
+<option>EM ESPERA</option>
+<option>FINALIZADA</option>
+</select>
+
+<input id="chi" type="number" placeholder="CHI">
+
+<select id="utd">
+<option>GOIANA</option>
+<option>PAULISTA</option>
+<option>CAMARAGIBE</option>
+<option>TIMBAÚBA</option>
+<option>CARPINA</option>
+</select>
+
+<br>
+<button onclick="add()">Adicionar</button>
+<button onclick="limpar()">Limpar Tudo</button>
+<button onclick="visualizar()">Visualizar</button>
+
+<div id="lista" class="card"></div>
+
+</div>
+
+<div id="tela2">
+
+<button onclick="voltar()">Voltar</button>
+<button onclick="gerar()">Gerar Imagem</button>
+
+<div id="relatorio" class="card"></div>
+
+</div>
+
+<script>
+
+let dados=[];
+
+function add(){
+if(!oc.value || !eq.value || !chi.value) return alert("Preencha tudo");
+if(Number(chi.value)<0) return alert("CHI inválido");
+
+dados.push({
+oc:oc.value,
+eq:eq.value,
+st:st.value,
+chi:Number(chi.value),
+utd:utd.value
+});
+
+render();
+}
+
+function limpar(){
+dados=[];
+render();
+}
+
+function excluir(i){
+dados.splice(i,1);
+render();
+}
+
+function render(){
+lista.innerHTML = dados.map((d,i)=>
+`<div class="linha">
+<span>${d.oc} - ${d.eq} - ${d.st}</span>
+<button class="excluir" onclick="excluir(${i})">X</button>
+</div>`
+).join('');
+}
+
+function cor(status){
+if(status=="EM ESPERA") return "vermelho";
+if(status=="TRABALHANDO") return "laranja";
+if(status=="FINALIZADA") return "verde";
+}
+
+function ordenar(dados){
+return dados.sort((a,b)=>{
+let ordem = {"TRABALHANDO":1,"EM ESPERA":2,"FINALIZADA":3};
+return ordem[a.st]-ordem[b.st];
+});
+}
+
+function visualizar(){
+
+let listaOrdenada = ordenar([...dados]);
+
+let totalCHI=0;
+let totalOc=listaOrdenada.length;
+
+let statusCount={
+TRABALHANDO:0,
+"EM ESPERA":0,
+FINALIZADA:0
+};
+
+listaOrdenada.forEach(d=>{
+if(d.st=="TRABALHANDO" || d.st=="EM ESPERA"){
+totalCHI+=d.chi;
+}
+statusCount[d.st]++;
+});
+
+let dataAtual=new Date().toLocaleString();
+
+relatorio.innerHTML=`
+<div class="titulo">ACOMPANHAMENTO-TP-LV-EPs</div>
+<div class="data">${dataAtual}</div>
+
+${listaOrdenada.map(d=>`
+<div class="linha">
+<span>
+<span class="bolinha ${cor(d.st)}"></span>
+${d.oc} | ${d.eq} | ${d.st} | CHI:${d.chi} | ${d.utd}
+</span>
+</div>
+`).join('')}
+
+<div class="cards">
+<div class="cardResumo"><b>Total Ocorrências</b><br>${totalOc}</div>
+<div class="cardResumo"><b>CHI</b><br>${totalCHI}</div>
+<div class="cardResumo"><b>Trabalhando</b><br>${statusCount["TRABALHANDO"]}</div>
+<div class="cardResumo"><b>Em Espera</b><br>${statusCount["EM ESPERA"]}</div>
+<div class="cardResumo"><b>Finalizada</b><br>${statusCount["FINALIZADA"]}</div>
+</div>
+
+<div class="rodape">Manutenção, UTEP Setor Norte</div>
+`;
+
+tela1.style.display="none";
+tela2.style.display="block";
+}
+
+function voltar(){
+tela1.style.display="block";
+tela2.style.display="none";
+}
+
+function gerar(){
+html2canvas(relatorio).then(canvas=>{
+let link=document.createElement('a');
+link.download="relatorio.png";
+link.href=canvas.toDataURL();
+link.click();
+});
+}
+
+</script>
+
+</body>
+</html>
