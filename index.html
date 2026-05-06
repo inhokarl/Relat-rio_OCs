@@ -135,6 +135,20 @@ cursor:pointer
 
 let dados=[];
 
+// CARREGAR DADOS SALVOS
+function carregar(){
+let salvo = localStorage.getItem("dadosOcorrencias");
+if(salvo){
+dados = JSON.parse(salvo);
+render();
+}
+}
+
+// SALVAR
+function salvar(){
+localStorage.setItem("dadosOcorrencias", JSON.stringify(dados));
+}
+
 function add(){
 if(!oc.value || !eq.value || !chi.value) return alert("Preencha tudo");
 if(Number(chi.value)<0) return alert("CHI inválido");
@@ -147,16 +161,20 @@ chi:Number(chi.value),
 utd:utd.value
 });
 
+salvar();
 render();
 }
 
 function limpar(){
+if(!confirm("Apagar tudo?")) return;
 dados=[];
+salvar();
 render();
 }
 
 function excluir(i){
 dados.splice(i,1);
+salvar();
 render();
 }
 
@@ -245,6 +263,9 @@ link.href=canvas.toDataURL();
 link.click();
 });
 }
+
+// INICIA CARREGANDO
+carregar();
 
 </script>
 
