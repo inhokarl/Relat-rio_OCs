@@ -82,7 +82,7 @@ border-radius:8px;text-align:center;font-size:13px
 <option>FINALIZADA</option>
 </select>
 
-<input id="chi" type="number" placeholder="CHI">
+<input id="ci" type="number" placeholder="CI">
 
 <select id="utd">
 <option>GOIANA</option>
@@ -129,16 +129,16 @@ localStorage.setItem("dadosOcorrencias",JSON.stringify(dados));
 }
 
 function add(){
-if(!oc.value || !eq.value || !chi.value || !dataOc.value)
+if(!oc.value || !eq.value || !ci.value || !dataOc.value)
 return alert("Preencha tudo");
 
-if(Number(chi.value)<0) return alert("CHI inválido");
+if(Number(ci.value)<0) return alert("CI inválido");
 
 let item={
 oc:oc.value,
 eq:eq.value,
 st:st.value,
-chi:Number(chi.value),
+ci:Number(ci.value),
 utd:utd.value,
 data:dataOc.value
 };
@@ -161,7 +161,7 @@ let d=dados[i];
 oc.value=d.oc;
 eq.value=d.eq;
 st.value=d.st;
-chi.value=d.chi;
+ci.value=d.ci;
 utd.value=d.utd;
 dataOc.value=d.data;
 
@@ -172,7 +172,7 @@ btnAdd.innerText="Atualizar";
 function limparCampos(){
 oc.value="";
 eq.value="";
-chi.value="";
+ci.value="";
 dataOc.value="";
 }
 
@@ -226,14 +226,14 @@ function visualizar(){
 
 let listaOrdenada=ordenar([...dados]);
 
-let totalCHI=0;
+let totalCI=0;
 let totalOc=listaOrdenada.length;
 
 let statusCount={TRABALHANDO:0,"EM ESPERA":0,FINALIZADA:0};
 
 listaOrdenada.forEach(d=>{
 if(d.st=="TRABALHANDO"||d.st=="EM ESPERA"){
-totalCHI+=d.chi;
+totalCI+=d.ci;
 }
 statusCount[d.st]++;
 });
@@ -247,7 +247,7 @@ relatorio.innerHTML=`
 ${listaOrdenada.map(d=>`
 <div class="linha">
 <span class="bolinha ${cor(d.st)}"></span>
-${d.oc} | ${d.eq} | ${d.st} | CHI:${d.chi} | ${d.utd} |
+${d.oc} | ${d.eq} | ${d.st} | CI:${d.ci} | ${d.utd} |
 ${new Date(d.data).toLocaleString()}
 <span class="horas">(${horasDecorridas(d.data)}h)</span>
 </div>
@@ -255,7 +255,7 @@ ${new Date(d.data).toLocaleString()}
 
 <div class="cards">
 <div class="cardResumo"><b>Total Ocorrências</b><br>${totalOc}</div>
-<div class="cardResumo"><b>CHI</b><br>${totalCHI}</div>
+<div class="cardResumo"><b>CI</b><br>${totalCI}</div>
 <div class="cardResumo"><b>Trabalhando</b><br>${statusCount["TRABALHANDO"]}</div>
 <div class="cardResumo"><b>Em Espera</b><br>${statusCount["EM ESPERA"]}</div>
 <div class="cardResumo"><b>Finalizada</b><br>${statusCount["FINALIZADA"]}</div>
