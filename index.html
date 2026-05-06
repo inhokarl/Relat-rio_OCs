@@ -10,7 +10,7 @@ body{font-family:Arial;background:#f0f4f8;padding:10px}
 h2{color:#003A8F}
 
 input,select{
-padding:6px;margin:4px;width:150px;
+padding:6px;margin:4px;width:160px;
 border:1px solid #ccc;border-radius:5px
 }
 
@@ -30,8 +30,7 @@ margin-top:10px
 
 .linha{
 padding:6px;border-bottom:1px solid #eee;
-display:flex;justify-content:space-between;
-font-size:14px
+font-size:13px
 }
 
 .bolinha{
@@ -43,6 +42,12 @@ display:inline-block;margin-right:6px
 .laranja{background:#fb8c00}
 .verde{background:#43a047}
 
+.horas{
+color:red;
+font-weight:bold;
+margin-left:5px
+}
+
 #tela2{display:none}
 
 .titulo{
@@ -50,7 +55,7 @@ font-weight:bold;text-align:center;
 font-size:20px;color:#003A8F
 }
 
-.data{
+.dataTopo{
 text-align:center;
 font-size:11px;color:#666;
 margin-bottom:10px
@@ -78,12 +83,9 @@ font-weight:bold
 }
 
 .excluir{
-background:red;
-color:#fff;
-border:none;
-border-radius:5px;
-padding:2px 6px;
-cursor:pointer
+background:red;color:#fff;
+border:none;border-radius:5px;
+padding:2px 6px;cursor:pointer
 }
 </style>
 </head>
@@ -114,6 +116,10 @@ cursor:pointer
 </select>
 
 <br>
+<label>Data/Hora:</label>
+<input id="dataOc" type="datetime-local">
+
+<br>
 <button onclick="add()">Adicionar</button>
 <button onclick="limpar()">Limpar Tudo</button>
 <button onclick="visualizar()">Visualizar</button>
@@ -135,22 +141,22 @@ cursor:pointer
 
 let dados=[];
 
-// CARREGAR DADOS SALVOS
 function carregar(){
-let salvo = localStorage.getItem("dadosOcorrencias");
+let salvo=localStorage.getItem("dadosOcorrencias");
 if(salvo){
-dados = JSON.parse(salvo);
+dados=JSON.parse(salvo);
 render();
 }
 }
 
-// SALVAR
 function salvar(){
-localStorage.setItem("dadosOcorrencias", JSON.stringify(dados));
+localStorage.setItem("dadosOcorrencias",JSON.stringify(dados));
 }
 
 function add(){
-if(!oc.value || !eq.value || !chi.value) return alert("Preencha tudo");
+if(!oc.value || !eq.value || !chi.value || !dataOc.value)
+return alert("Preencha tudo");
+
 if(Number(chi.value)<0) return alert("CHI inválido");
 
 dados.push({
@@ -158,7 +164,8 @@ oc:oc.value,
 eq:eq.value,
 st:st.value,
 chi:Number(chi.value),
-utd:utd.value
+utd:utd.value,
+data:dataOc.value
 });
 
 salvar();
@@ -179,9 +186,9 @@ render();
 }
 
 function render(){
-lista.innerHTML = dados.map((d,i)=>
+lista.innerHTML=dados.map((d,i)=>
 `<div class="linha">
-<span>${d.oc} - ${d.eq} - ${d.st}</span>
+${d.oc} - ${d.eq} - ${d.st}
 <button class="excluir" onclick="excluir(${i})">X</button>
 </div>`
 ).join('');
@@ -193,16 +200,23 @@ if(status=="TRABALHANDO") return "laranja";
 if(status=="FINALIZADA") return "verde";
 }
 
+function horasDecorridas(data){
+let inicio=new Date(data);
+let agora=new Date();
+let diff=(agora - inicio)/(1000*60*60);
+return diff.toFixed(1);
+}
+
 function ordenar(dados){
 return dados.sort((a,b)=>{
-let ordem = {"TRABALHANDO":1,"EM ESPERA":2,"FINALIZADA":3};
+let ordem={"TRABALHANDO":1,"EM ESPERA":2,"FINALIZADA":3};
 return ordem[a.st]-ordem[b.st];
 });
 }
 
 function visualizar(){
 
-let listaOrdenada = ordenar([...dados]);
+let listaOrdenada=ordenar([...dados]);
 
 let totalCHI=0;
 let totalOc=listaOrdenada.length;
@@ -214,7 +228,7 @@ FINALIZADA:0
 };
 
 listaOrdenada.forEach(d=>{
-if(d.st=="TRABALHANDO" || d.st=="EM ESPERA"){
+if(d.st=="TRABALHANDO"||d.st=="EM ESPERA"){
 totalCHI+=d.chi;
 }
 statusCount[d.st]++;
@@ -224,14 +238,14 @@ let dataAtual=new Date().toLocaleString();
 
 relatorio.innerHTML=`
 <div class="titulo">ACOMPANHAMENTO-TP-LV-EPs</div>
-<div class="data">${dataAtual}</div>
+<div class="dataTopo">${dataAtual}</div>
 
 ${listaOrdenada.map(d=>`
 <div class="linha">
-<span>
 <span class="bolinha ${cor(d.st)}"></span>
-${d.oc} | ${d.eq} | ${d.st} | CHI:${d.chi} | ${d.utd}
-</span>
+${d.oc} | ${d.eq} | ${d.st} | CHI:${d.chi} | ${d.utd} |
+${new Date(d.data).toLocaleString()}
+<span class="horas">(${horasDecorridas(d.data)}h)</span>
 </div>
 `).join('')}
 
@@ -264,7 +278,6 @@ link.click();
 });
 }
 
-// INICIA CARREGANDO
 carregar();
 
 </script>
