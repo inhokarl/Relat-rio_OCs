@@ -30,8 +30,16 @@ margin-top:10px
 
 .linha{
 padding:6px;border-bottom:1px solid #eee;
-font-size:13px
+font-size:13px;
+display:flex;justify-content:space-between;align-items:center
 }
+
+.botoes{
+display:flex;gap:5px
+}
+
+.editar{background:orange}
+.excluir{background:red}
 
 .bolinha{
 width:10px;height:10px;border-radius:50%;
@@ -42,51 +50,20 @@ display:inline-block;margin-right:6px
 .laranja{background:#fb8c00}
 .verde{background:#43a047}
 
-.horas{
-color:red;
-font-weight:bold;
-margin-left:5px
-}
+.horas{color:red;font-weight:bold;margin-left:5px}
 
 #tela2{display:none}
 
-.titulo{
-font-weight:bold;text-align:center;
-font-size:20px;color:#003A8F
-}
+.titulo{text-align:center;font-size:20px;color:#003A8F;font-weight:bold}
+.dataTopo{text-align:center;font-size:11px;color:#666;margin-bottom:10px}
 
-.dataTopo{
-text-align:center;
-font-size:11px;color:#666;
-margin-bottom:10px
-}
-
-.cards{
-display:flex;gap:10px;flex-wrap:wrap;
-margin-top:10px
-}
-
+.cards{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .cardResumo{
-flex:1;
-background:#e6f0ff;
-padding:10px;
-border-radius:8px;
-text-align:center;
-font-size:13px
+flex:1;background:#e6f0ff;padding:10px;
+border-radius:8px;text-align:center;font-size:13px
 }
 
-.rodape{
-font-size:11px;
-text-align:center;
-margin-top:10px;
-font-weight:bold
-}
-
-.excluir{
-background:red;color:#fff;
-border:none;border-radius:5px;
-padding:2px 6px;cursor:pointer
-}
+.rodape{text-align:center;margin-top:10px;font-weight:bold;font-size:11px}
 </style>
 </head>
 
@@ -120,7 +97,7 @@ padding:2px 6px;cursor:pointer
 <input id="dataOc" type="datetime-local">
 
 <br>
-<button onclick="add()">Adicionar</button>
+<button id="btnAdd" onclick="add()">Adicionar</button>
 <button onclick="limpar()">Limpar Tudo</button>
 <button onclick="visualizar()">Visualizar</button>
 
@@ -129,17 +106,15 @@ padding:2px 6px;cursor:pointer
 </div>
 
 <div id="tela2">
-
 <button onclick="voltar()">Voltar</button>
 <button onclick="gerar()">Gerar Imagem</button>
-
 <div id="relatorio" class="card"></div>
-
 </div>
 
 <script>
 
 let dados=[];
+let editIndex=null;
 
 function carregar(){
 let salvo=localStorage.getItem("dadosOcorrencias");
@@ -159,17 +134,46 @@ return alert("Preencha tudo");
 
 if(Number(chi.value)<0) return alert("CHI inválido");
 
-dados.push({
+let item={
 oc:oc.value,
 eq:eq.value,
 st:st.value,
 chi:Number(chi.value),
 utd:utd.value,
 data:dataOc.value
-});
+};
 
+if(editIndex===null){
+dados.push(item);
+}else{
+dados[editIndex]=item;
+editIndex=null;
+btnAdd.innerText="Adicionar";
+}
+
+limparCampos();
 salvar();
 render();
+}
+
+function editar(i){
+let d=dados[i];
+oc.value=d.oc;
+eq.value=d.eq;
+st.value=d.st;
+chi.value=d.chi;
+utd.value=d.utd;
+dataOc.value=d.data;
+
+editIndex=i;
+btnAdd.innerText="Atualizar";
+}
+
+function limparCampos(){
+oc.value="";
+eq.value="";
+chi.value="";
+dataOc.value="";
 }
 
 function limpar(){
@@ -186,31 +190,35 @@ render();
 }
 
 function render(){
-lista.innerHTML=dados.map((d,i)=>
-`<div class="linha">
-${d.oc} - ${d.eq} - ${d.st}
+lista.innerHTML=dados.map((d,i)=>`
+<div class="linha">
+<span>${d.oc} - ${d.eq} - ${d.st}</span>
+<div class="botoes">
+<button class="editar" onclick="editar(${i})">Editar</button>
 <button class="excluir" onclick="excluir(${i})">X</button>
-</div>`
-).join('');
+</div>
+</div>
+`).join('');
 }
 
-function cor(status){
-if(status=="EM ESPERA") return "vermelho";
-if(status=="TRABALHANDO") return "laranja";
-if(status=="FINALIZADA") return "verde";
+function cor(s){
+if(s=="EM ESPERA") return "vermelho";
+if(s=="TRABALHANDO") return "laranja";
+return "verde";
 }
 
 function horasDecorridas(data){
 let inicio=new Date(data);
 let agora=new Date();
-let diff=(agora - inicio)/(1000*60*60);
+let diff=(agora-inicio)/(1000*60*60);
+if(diff<0) return "0.0";
 return diff.toFixed(1);
 }
 
-function ordenar(dados){
-return dados.sort((a,b)=>{
-let ordem={"TRABALHANDO":1,"EM ESPERA":2,"FINALIZADA":3};
-return ordem[a.st]-ordem[b.st];
+function ordenar(lista){
+return lista.sort((a,b)=>{
+let o={"TRABALHANDO":1,"EM ESPERA":2,"FINALIZADA":3};
+return o[a.st]-o[b.st];
 });
 }
 
@@ -221,11 +229,7 @@ let listaOrdenada=ordenar([...dados]);
 let totalCHI=0;
 let totalOc=listaOrdenada.length;
 
-let statusCount={
-TRABALHANDO:0,
-"EM ESPERA":0,
-FINALIZADA:0
-};
+let statusCount={TRABALHANDO:0,"EM ESPERA":0,FINALIZADA:0};
 
 listaOrdenada.forEach(d=>{
 if(d.st=="TRABALHANDO"||d.st=="EM ESPERA"){
@@ -270,7 +274,7 @@ tela2.style.display="none";
 }
 
 function gerar(){
-html2canvas(relatorio).then(canvas=>{
+html2canvas(relatorio,{scale:2}).then(canvas=>{
 let link=document.createElement('a');
 link.download="relatorio.png";
 link.href=canvas.toDataURL();
