@@ -1,70 +1,201 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>App Ocorrências</title>
+
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <style>
-body{font-family:Arial;background:#f0f4f8;padding:10px}
-h2{color:#003A8F}
+
+body{
+font-family:Arial;
+background:#f0f4f8;
+padding:8px;
+margin:0;
+}
+
+h2{
+color:#003A8F;
+font-size:22px;
+}
 
 input,select{
-padding:6px;margin:4px;width:160px;
-border:1px solid #ccc;border-radius:5px
+padding:8px;
+margin:4px;
+width:160px;
+border:1px solid #ccc;
+border-radius:6px;
+font-size:14px;
 }
 
 button{
-padding:8px 12px;margin:5px;
-border:none;border-radius:6px;
-background:#003A8F;color:#fff;
-font-weight:bold;cursor:pointer
+padding:8px 12px;
+margin:5px;
+border:none;
+border-radius:6px;
+background:#003A8F;
+color:#fff;
+font-weight:bold;
+cursor:pointer;
+font-size:12px;
 }
 
 .card{
-background:#fff;padding:15px;
-border-radius:12px;
+background:#fff;
+padding:12px;
+border-radius:14px;
 box-shadow:0 2px 8px rgba(0,0,0,0.1);
-margin-top:10px
+margin-top:10px;
+overflow:hidden;
+}
+
+#tela2{
+display:none;
+}
+
+.titulo{
+text-align:center;
+font-size:18px;
+font-weight:bold;
+color:#003A8F;
+margin-top:5px;
+}
+
+.dataTopo{
+text-align:center;
+font-size:10px;
+color:#666;
+margin-bottom:12px;
+}
+
+.tabela{
+width:100%;
 }
 
 .linha{
-padding:6px;border-bottom:1px solid #eee;
-font-size:13px;
-display:flex;justify-content:space-between;align-items:center
+display:grid;
+grid-template-columns:
+1.3fr
+1fr
+1.2fr
+0.7fr
+0.8fr
+0.8fr
+1fr;
+gap:4px;
+padding:7px 3px;
+border-bottom:1px solid #eee;
+font-size:10px;
+align-items:center;
+text-align:center;
+}
+
+.topoTabela{
+background:#003A8F;
+color:#fff;
+font-weight:bold;
+border-radius:6px;
+font-size:9px;
+}
+
+.horas{
+color:red;
+font-weight:bold;
+}
+
+.statusAzul{
+color:#1565c0;
+font-weight:bold;
+}
+
+.statusLaranja{
+color:#fb8c00;
+font-weight:bold;
+}
+
+.statusVermelho{
+color:#e53935;
+font-weight:bold;
+}
+
+.statusVerde{
+color:#43a047;
+font-weight:bold;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:6px;
+margin-top:14px;
+}
+
+.cardResumo{
+background:#e6f0ff;
+padding:10px;
+border-radius:12px;
+text-align:center;
+font-size:11px;
+font-weight:bold;
+min-height:60px;
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+}
+
+.rodape{
+text-align:center;
+margin-top:12px;
+font-size:11px;
+font-weight:bold;
+}
+
+.listaItem{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:10px;
+border-bottom:1px solid #eee;
+font-size:12px;
 }
 
 .botoes{
-display:flex;gap:5px
+display:flex;
+gap:5px;
 }
 
-.editar{background:orange}
-.excluir{background:red}
-
-.bolinha{
-width:10px;height:10px;border-radius:50%;
-display:inline-block;margin-right:6px
+.editar{
+background:orange;
 }
 
-.vermelho{background:#e53935}
-.laranja{background:#fb8c00}
-.verde{background:#43a047}
-
-.horas{color:red;font-weight:bold;margin-left:5px}
-
-#tela2{display:none}
-
-.titulo{text-align:center;font-size:20px;color:#003A8F;font-weight:bold}
-.dataTopo{text-align:center;font-size:11px;color:#666;margin-bottom:10px}
-
-.cards{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.cardResumo{
-flex:1;background:#e6f0ff;padding:10px;
-border-radius:8px;text-align:center;font-size:13px
+.excluir{
+background:red;
 }
 
-.rodape{text-align:center;margin-top:10px;font-weight:bold;font-size:11px}
+@media(min-width:700px){
+
+.cards{
+grid-template-columns:repeat(4,1fr);
+}
+
+.linha{
+font-size:12px;
+}
+
+.topoTabela{
+font-size:11px;
+}
+
+}
+
 </style>
+
 </head>
 
 <body>
@@ -74,10 +205,40 @@ border-radius:8px;text-align:center;font-size:13px
 <h2>Cadastro</h2>
 
 <input id="oc" placeholder="Ocorrência">
-<input id="eq" placeholder="Equipe">
+
+<input id="eq" list="listaEquipes" placeholder="Equipe">
+
+<datalist id="listaEquipes">
+<option value="ENG1022">
+<option value="ENG1023">
+<option value="ENG1024">
+<option value="ENG1025">
+<option value="ENG1026">
+<option value="ENG1027">
+<option value="ENG1028">
+<option value="ENG1029">
+<option value="ENG1030">
+<option value="ENG1031">
+<option value="ENG1032">
+<option value="ENG1033">
+<option value="ENG1034">
+<option value="ENG1035">
+<option value="ENG2012">
+<option value="ENG2013">
+<option value="ENG2014">
+<option value="ENG2015">
+<option value="ENG2016">
+<option value="ENG2017">
+<option value="ENG2018">
+<option value="ENG2019">
+<option value="ENG2020">
+<option value="ENG2022">
+<option value="ENG5003">
+</datalist>
 
 <select id="st">
 <option>TRABALHANDO</option>
+<option>DESLOCAMENTO</option>
 <option>EM ESPERA</option>
 <option>FINALIZADA</option>
 </select>
@@ -93,12 +254,17 @@ border-radius:8px;text-align:center;font-size:13px
 </select>
 
 <br>
+
 <label>Data/Hora:</label>
+
 <input id="dataOc" type="datetime-local">
 
 <br>
+
 <button id="btnAdd" onclick="add()">Adicionar</button>
+
 <button onclick="limpar()">Limpar Tudo</button>
+
 <button onclick="visualizar()">Visualizar</button>
 
 <div id="lista" class="card"></div>
@@ -106,9 +272,13 @@ border-radius:8px;text-align:center;font-size:13px
 </div>
 
 <div id="tela2">
+
 <button onclick="voltar()">Voltar</button>
+
 <button onclick="gerar()">Gerar Imagem</button>
+
 <div id="relatorio" class="card"></div>
+
 </div>
 
 <script>
@@ -116,23 +286,110 @@ border-radius:8px;text-align:center;font-size:13px
 let dados=[];
 let editIndex=null;
 
+const processos={
+ENG1022:"OBRA",
+ENG1023:"MANUTENÇÃO",
+ENG1024:"OBRA",
+ENG1025:"OBRA",
+ENG1026:"OBRA",
+ENG1027:"MANUTENÇÃO",
+ENG1028:"OBRA",
+ENG1029:"OBRA",
+ENG1030:"OBRA",
+ENG1031:"OBRA",
+ENG1032:"MANUTENÇÃO",
+ENG1033:"OBRA",
+ENG1034:"OBRA",
+ENG1035:"OBRA",
+ENG2012:"OBRA",
+ENG2013:"OBRA",
+ENG2014:"OBRA",
+ENG2015:"OBRA",
+ENG2016:"OBRA",
+ENG2017:"OBRA",
+ENG2018:"OBRA",
+ENG2019:"OBRA",
+ENG2020:"OBRA",
+ENG2022:"OBRA",
+ENG5003:"MANUTENÇÃO"
+};
+
+const bases={
+ENG1022:"CARPINA",
+ENG1023:"CARPINA",
+ENG1024:"CARPINA",
+ENG1025:"CARPINA",
+ENG1026:"CARPINA",
+ENG1027:"CARPINA",
+ENG1028:"IGARASSU",
+ENG1029:"CARPINA",
+ENG1030:"CARPINA",
+ENG1031:"CARPINA",
+ENG1032:"CARPINA",
+ENG1033:"IGARASSU",
+ENG1034:"IGARASSU",
+ENG1035:"IGARASSU",
+ENG2012:"CARPINA",
+ENG2013:"CARPINA",
+ENG2014:"CARPINA",
+ENG2015:"CARPINA",
+ENG2016:"CARPINA",
+ENG2017:"CARPINA",
+ENG2018:"CARPINA",
+ENG2019:"CARPINA",
+ENG2020:"IGARASSU",
+ENG2022:"CARPINA",
+ENG5003:"CARPINA"
+};
+
 function carregar(){
+
 let salvo=localStorage.getItem("dadosOcorrencias");
+
 if(salvo){
+
 dados=JSON.parse(salvo);
+
 render();
+
 }
+
 }
 
 function salvar(){
+
 localStorage.setItem("dadosOcorrencias",JSON.stringify(dados));
+
+}
+
+function gerarNumeroOcorrencia(numero){
+
+let agora=new Date();
+
+let ano=agora.getFullYear();
+
+let mes=String(agora.getMonth()+1).padStart(2,"0");
+
+return `${ano}_${mes}_${numero}`;
+
+}
+
+function classeStatus(status){
+
+if(status=="TRABALHANDO") return "statusAzul";
+
+if(status=="DESLOCAMENTO") return "statusLaranja";
+
+if(status=="EM ESPERA") return "statusVermelho";
+
+return "statusVerde";
+
 }
 
 function add(){
+
 if(!oc.value || !eq.value || !ci.value || !dataOc.value)
 return alert("Preencha tudo");
-
-if(Number(ci.value)<0) return alert("CI inválido");
 
 let item={
 oc:oc.value,
@@ -144,20 +401,31 @@ data:dataOc.value
 };
 
 if(editIndex===null){
+
 dados.push(item);
+
 }else{
+
 dados[editIndex]=item;
+
 editIndex=null;
+
 btnAdd.innerText="Adicionar";
+
 }
 
 limparCampos();
+
 salvar();
+
 render();
+
 }
 
 function editar(i){
+
 let d=dados[i];
+
 oc.value=d.oc;
 eq.value=d.eq;
 st.value=d.st;
@@ -166,60 +434,101 @@ utd.value=d.utd;
 dataOc.value=d.data;
 
 editIndex=i;
+
 btnAdd.innerText="Atualizar";
+
 }
 
 function limparCampos(){
+
 oc.value="";
 eq.value="";
 ci.value="";
 dataOc.value="";
+
 }
 
 function limpar(){
+
 if(!confirm("Apagar tudo?")) return;
+
 dados=[];
+
 salvar();
+
 render();
+
 }
 
 function excluir(i){
+
 dados.splice(i,1);
+
 salvar();
+
 render();
+
 }
 
-function render(){
-lista.innerHTML=dados.map((d,i)=>`
-<div class="linha">
-<span>${d.oc} - ${d.eq} - ${d.st} | CI:${d.ci}</span>
-<div class="botoes">
-<button class="editar" onclick="editar(${i})">Editar</button>
-<button class="excluir" onclick="excluir(${i})">X</button>
-</div>
-</div>
-`).join('');
-}
+function horasDecorridas(data,status){
 
-function cor(s){
-if(s=="EM ESPERA") return "vermelho";
-if(s=="TRABALHANDO") return "laranja";
-return "verde";
-}
+if(status=="FINALIZADA") return "0.0";
 
-function horasDecorridas(data){
 let inicio=new Date(data);
+
 let agora=new Date();
+
 let diff=(agora-inicio)/(1000*60*60);
-if(diff<0) return "0.0";
+
 return diff.toFixed(1);
+
 }
 
 function ordenar(lista){
+
 return lista.sort((a,b)=>{
-let o={"TRABALHANDO":1,"EM ESPERA":2,"FINALIZADA":3};
-return o[a.st]-o[b.st];
+
+let ordem={
+"TRABALHANDO":1,
+"DESLOCAMENTO":2,
+"EM ESPERA":3,
+"FINALIZADA":4
+};
+
+return ordem[a.st]-ordem[b.st];
+
 });
+
+}
+
+function render(){
+
+lista.innerHTML=dados.map((d,i)=>`
+
+<div class="listaItem">
+
+<div>
+<b>${gerarNumeroOcorrencia(d.oc)}</b>
+<br>
+${d.eq}
+</div>
+
+<div class="botoes">
+
+<button class="editar" onclick="editar(${i})">
+Editar
+</button>
+
+<button class="excluir" onclick="excluir(${i})">
+X
+</button>
+
+</div>
+
+</div>
+
+`).join('');
+
 }
 
 function visualizar(){
@@ -227,59 +536,207 @@ function visualizar(){
 let listaOrdenada=ordenar([...dados]);
 
 let totalCI=0;
+
 let totalOc=listaOrdenada.length;
 
-let statusCount={TRABALHANDO:0,"EM ESPERA":0,FINALIZADA:0};
+let statusCount={
+TRABALHANDO:0,
+DESLOCAMENTO:0,
+"EM ESPERA":0,
+FINALIZADA:0
+};
+
+let processoCount={
+OBRA:0,
+MANUTENÇÃO:0
+};
+
+let baseCount={
+CARPINA:0,
+IGARASSU:0
+};
 
 listaOrdenada.forEach(d=>{
-if(d.st=="TRABALHANDO"||d.st=="EM ESPERA"){
-totalCI += Number(d.ci) || 0;
+
+if(d.st!="FINALIZADA"){
+totalCI += Number(d.ci);
 }
+
 statusCount[d.st]++;
+
+let processo=processos[d.eq];
+if(processo){
+processoCount[processo]++;
+}
+
+let base=bases[d.eq];
+if(base){
+baseCount[base]++;
+}
+
 });
 
 let dataAtual=new Date().toLocaleString();
 
 relatorio.innerHTML=`
-<div class="titulo">ACOMPANHAMENTO-TP-LV-EPs</div>
-<div class="dataTopo">${dataAtual}</div>
+
+<div class="titulo">
+ACOMPANHAMENTO-TP-LV-EPs
+</div>
+
+<div class="dataTopo">
+${dataAtual}
+</div>
+
+<div class="tabela">
+
+<div class="linha topoTabela">
+
+<div>OC</div>
+<div>Equipe</div>
+<div>Status</div>
+<div>CI</div>
+<div>UTD</div>
+<div>Tempo</div>
+<div>Dt Solic.</div>
+
+</div>
 
 ${listaOrdenada.map(d=>`
+
 <div class="linha">
-<span class="bolinha ${cor(d.st)}"></span>
-${d.oc} | ${d.eq} | ${d.st} | CI:${d.ci} | ${d.utd} |
-${new Date(d.data).toLocaleString()}
-<span class="horas">(${horasDecorridas(d.data)}h)</span>
+
+<div>
+${gerarNumeroOcorrencia(d.oc)}
 </div>
+
+<div>${d.eq}</div>
+
+<div class="${classeStatus(d.st)}">
+${d.st}
+</div>
+
+<div>
+${d.st=="FINALIZADA" ? "-" : d.ci}
+</div>
+
+<div>${d.utd}</div>
+
+<div class="horas">
+${horasDecorridas(d.data,d.st)}h
+</div>
+
+<div>
+${new Date(d.data).toLocaleDateString()}
+</div>
+
+</div>
+
 `).join('')}
 
-<div class="cards">
-<div class="cardResumo"><b>Total Ocorrências</b><br>${totalOc}</div>
-<div class="cardResumo"><b>CI Total</b><br>${totalCI}</div>
-<div class="cardResumo"><b>Trabalhando</b><br>${statusCount["TRABALHANDO"]}</div>
-<div class="cardResumo"><b>Em Espera</b><br>${statusCount["EM ESPERA"]}</div>
-<div class="cardResumo"><b>Finalizada</b><br>${statusCount["FINALIZADA"]}</div>
 </div>
 
-<div class="rodape">Manutenção, UTEP Setor Norte</div>
+<div class="cards">
+
+<div class="cardResumo">
+Total OCs
+<br><br>
+${totalOc}
+</div>
+
+<div class="cardResumo">
+CI Total
+<br><br>
+${totalCI}
+</div>
+
+<div class="cardResumo">
+OCs Em Execução
+<br><br>
+${statusCount["TRABALHANDO"]}
+</div>
+
+<div class="cardResumo">
+OCs Em Deslocamento
+<br><br>
+${statusCount["DESLOCAMENTO"]}
+</div>
+
+<div class="cardResumo">
+OCs Em Espera
+<br><br>
+${statusCount["EM ESPERA"]}
+</div>
+
+<div class="cardResumo">
+OCs Finalizadas
+<br><br>
+${statusCount["FINALIZADA"]}
+</div>
+
+<div class="cardResumo">
+Obra
+<br><br>
+${processoCount["OBRA"]}
+</div>
+
+<div class="cardResumo">
+Manutencão
+<br><br>
+${processoCount["MANUTENÇÃO"]}
+</div>
+
+<div class="cardResumo">
+Base Carp.
+<br><br>
+${baseCount["CARPINA"]}
+</div>
+
+<div class="cardResumo">
+Base Igara.
+<br><br>
+${baseCount["IGARASSU"]}
+</div>
+
+</div>
+
+<div class="rodape">
+Manutenção, UTEP Setor Norte
+</div>
+
 `;
 
 tela1.style.display="none";
 tela2.style.display="block";
+
 }
 
 function voltar(){
+
 tela1.style.display="block";
 tela2.style.display="none";
+
 }
 
 function gerar(){
-html2canvas(relatorio,{scale:2}).then(canvas=>{
+
+window.scrollTo(0,0);
+
+html2canvas(relatorio,{
+scale:3,
+useCORS:true
+}).then(canvas=>{
+
 let link=document.createElement('a');
+
 link.download="relatorio.png";
-link.href=canvas.toDataURL();
+
+link.href=canvas.toDataURL("image/png");
+
 link.click();
+
 });
+
 }
 
 carregar();
@@ -287,4 +744,5 @@ carregar();
 </script>
 
 </body>
+
 </html>
