@@ -234,6 +234,7 @@ font-size:11px;
 <option value="ENG2020">
 <option value="ENG2022">
 <option value="ENG5003">
+<option value="SEM EQUIPE">
 </datalist>
 
 <select id="st">
@@ -546,15 +547,9 @@ DESLOCAMENTO:0,
 FINALIZADA:0
 };
 
-let processoCount={
-OBRA:0,
-MANUTENÇÃO:0
-};
+let processoCount={};
 
-let baseCount={
-CARPINA:0,
-IGARASSU:0
-};
+let baseCount={};
 
 listaOrdenada.forEach(d=>{
 
@@ -565,13 +560,27 @@ totalCI += Number(d.ci);
 statusCount[d.st]++;
 
 let processo=processos[d.eq];
+
 if(processo){
+
+if(!processoCount[processo]){
+processoCount[processo]=0;
+}
+
 processoCount[processo]++;
+
 }
 
 let base=bases[d.eq];
+
 if(base){
+
+if(!baseCount[base]){
+baseCount[base]=0;
+}
+
 baseCount[base]++;
+
 }
 
 });
@@ -677,25 +686,25 @@ ${statusCount["FINALIZADA"]}
 <div class="cardResumo">
 TP-Obra
 <br><br>
-${processoCount["OBRA"]}
+${processoCount["OBRA"] || 0}
 </div>
 
 <div class="cardResumo">
-TP-Manutencão
+TP-Manutenção
 <br><br>
-${processoCount["MANUTENÇÃO"]}
+${processoCount["MANUTENÇÃO"] || 0}
 </div>
 
 <div class="cardResumo">
 Base Carp.
 <br><br>
-${baseCount["CARPINA"]}
+${baseCount["CARPINA"] || 0}
 </div>
 
 <div class="cardResumo">
 Base Igara.
 <br><br>
-${baseCount["IGARASSU"]}
+${baseCount["IGARASSU"] || 0}
 </div>
 
 </div>
