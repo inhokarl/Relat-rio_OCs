@@ -284,6 +284,9 @@ font-size:11px;
 
 <script>
 
+const URL_SCRIPT =
+"https://script.google.com/macros/s/AKfycbxoi65giqjzjjkHGXstVI6eu9bsjcLAT0uxCnSPWO__UcNRrFR7UMAxPO90C75GQ7rcEw/exec";
+
 let dados=[];
 let editIndex=null;
 
@@ -404,6 +407,25 @@ data:dataOc.value
 if(editIndex===null){
 
 dados.push(item);
+
+fetch(URL_SCRIPT,{
+
+method:"POST",
+
+body:JSON.stringify(item)
+
+})
+.then(r=>r.text())
+.then(res=>{
+
+console.log("Enviado:",res);
+
+})
+.catch(err=>{
+
+console.log("Erro:",err);
+
+});
 
 }else{
 
