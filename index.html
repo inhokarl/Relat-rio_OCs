@@ -287,8 +287,8 @@ font-size:11px;
 const URL_SCRIPT =
 "https://script.google.com/macros/s/AKfycbxoi65giqjzjjkHGXstVI6eu9bsjcLAT0uxCnSPWO__UcNRrFR7UMAxPO90C75GQ7rcEw/exec";
 
-let dados=[];
-let editIndex=null;
+let dados = [];
+let editIndex = null;
 
 const processos={
 ENG1022:"OBRA",
@@ -346,32 +346,86 @@ ENG2022:"CARPINA",
 ENG5003:"CARPINA"
 };
 
-async function carregar(){
+function gerarId(){
+
+return Date.now() + "_" +
+Math.random()
+.toString(36)
+.substring(2,8);
+
+}
+
+function salvarLocal(){
+
+localStorage.setItem(
+"dadosOcorrencias",
+JSON.stringify(dados)
+);
+
+}
+
+function carregarLocal(){
+
+let salvo =
+localStorage.getItem(
+"dadosOcorrencias"
+);
+
+if(salvo){
+
+dados = JSON.parse(salvo);
+
+render();
+
+}
+
+}
+
+async function sincronizarOnline(){
 
 try{
 
 const resposta =
 await fetch(URL_SCRIPT);
 
-dados =
+const online =
 await resposta.json();
+
+if(Array.isArray(online)){
+
+dados = online;
+
+salvarLocal();
 
 render();
 
+}
+
 }catch(erro){
 
-console.log(erro);
+console.log("Erro sync:",erro);
 
 }
 
 }
 
-function salvar(){
+async function enviarParaPlanilha(item){
 
-localStorage.setItem(
-"dadosOcorrencias",
-JSON.stringify(dados)
-);
+try{
+
+await fetch(URL_SCRIPT,{
+
+method:"POST",
+
+body:JSON.stringify(item)
+
+});
+
+}catch(erro){
+
+console.log("Erro envio:",erro);
+
+}
 
 }
 
@@ -404,40 +458,16 @@ return "statusVerde";
 
 }
 
-async function enviarParaPlanilha(item){
-
-try{
-
-await fetch(URL_SCRIPT,{
-
-method:"POST",
-
-body:JSON.stringify(item)
-
-});
-
-}catch(erro){
-
-console.log(erro);
-
-}
-
-}
-
 async function add(){
 
-if(!oc.value ||
-!eq.value ||
-!ci.value ||
-!dataOc.value)
-
+if(!oc.value || !eq.value || !ci.value || !dataOc.value)
 return alert("Preencha tudo");
 
 let item={
 
 id:
 editIndex===null
-? Date.now()
+? gerarId()
 : dados[editIndex].id,
 
 oc:oc.value,
@@ -463,15 +493,15 @@ btnAdd.innerText="Adicionar";
 
 }
 
-await enviarParaPlanilha(item);
-
-limparCampos();
-
-salvar();
-
-await carregar();
+salvarLocal();
 
 render();
+
+await enviarParaPlanilha(item);
+
+await sincronizarOnline();
+
+limparCampos();
 
 }
 
@@ -503,14 +533,11 @@ dataOc.value="";
 
 function limpar(){
 
-if(!confirm("Apagar tudo?"))
-return;
+if(!confirm("Apagar tudo?")) return;
 
 dados=[];
 
-localStorage.removeItem(
-"dadosOcorrencias"
-);
+salvarLocal();
 
 render();
 
@@ -520,7 +547,7 @@ function excluir(i){
 
 dados.splice(i,1);
 
-salvar();
+salvarLocal();
 
 render();
 
@@ -528,15 +555,13 @@ render();
 
 function horasDecorridas(data,status){
 
-if(status=="FINALIZADA")
-return "0.0";
+if(status=="FINALIZADA") return "0.0";
 
 let inicio=new Date(data);
 
 let agora=new Date();
 
-let diff=
-(agora-inicio)/(1000*60*60);
+let diff=(agora-inicio)/(1000*60*60);
 
 return diff.toFixed(1);
 
@@ -561,16 +586,13 @@ return ordem[a.st]-ordem[b.st];
 
 function render(){
 
-lista.innerHTML=
-dados.map((d,i)=>`
+lista.innerHTML=dados.map((d,i)=>`
 
 <div class="listaItem">
 
 <div>
 
-<b>
-${gerarNumeroOcorrencia(d.oc)}
-</b>
+<b>${gerarNumeroOcorrencia(d.oc)}</b>
 
 <br>
 
@@ -604,13 +626,11 @@ X
 
 function visualizar(){
 
-let listaOrdenada=
-ordenar([...dados]);
+let listaOrdenada=ordenar([...dados]);
 
 let totalCI=0;
 
-let totalOc=
-listaOrdenada.length;
+let totalOc=listaOrdenada.length;
 
 let statusCount={
 TRABALHANDO:0,
@@ -657,8 +677,7 @@ baseCount[base]++;
 
 });
 
-let dataAtual=
-new Date().toLocaleString();
+let dataAtual=new Date().toLocaleString();
 
 relatorio.innerHTML=`
 
@@ -699,23 +718,17 @@ ${d.st}
 </div>
 
 <div>
-${d.st=="FINALIZADA"
-? "-"
-: d.ci}
+${d.st=="FINALIZADA" ? "-" : d.ci}
 </div>
 
 <div>${d.utd}</div>
 
 <div class="horas">
-${horasDecorridas(
-d.data,
-d.st
-)}h
+${horasDecorridas(d.data,d.st)}h
 </div>
 
 <div>
-${new Date(d.data)
-.toLocaleDateString()}
+${new Date(d.data).toLocaleDateString()}
 </div>
 
 </div>
@@ -815,14 +828,11 @@ scale:3,
 useCORS:true
 }).then(canvas=>{
 
-let link=
-document.createElement('a');
+let link=document.createElement('a');
 
-link.download=
-"relatorio.png";
+link.download="relatorio.png";
 
-link.href=
-canvas.toDataURL("image/png");
+link.href=canvas.toDataURL("image/png");
 
 link.click();
 
@@ -830,7 +840,9 @@ link.click();
 
 }
 
-carregar();
+carregarLocal();
+
+sincronizarOnline();
 
 </script>
 
