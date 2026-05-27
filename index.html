@@ -4,8 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>App Ocorrências</title>
 
@@ -207,7 +206,36 @@ font-size:11px;
 
 <input id="oc" placeholder="Ocorrência">
 
-<input id="eq" placeholder="Equipe">
+<input id="eq" list="listaEquipes" placeholder="Equipe">
+
+<datalist id="listaEquipes">
+<option value="ENG1022">
+<option value="ENG1023">
+<option value="ENG1024">
+<option value="ENG1025">
+<option value="ENG1026">
+<option value="ENG1027">
+<option value="ENG1028">
+<option value="ENG1029">
+<option value="ENG1030">
+<option value="ENG1031">
+<option value="ENG1032">
+<option value="ENG1033">
+<option value="ENG1034">
+<option value="ENG1035">
+<option value="ENG2012">
+<option value="ENG2013">
+<option value="ENG2014">
+<option value="ENG2015">
+<option value="ENG2016">
+<option value="ENG2017">
+<option value="ENG2018">
+<option value="ENG2019">
+<option value="ENG2020">
+<option value="ENG2022">
+<option value="ENG5003">
+<option value="SEM EQUIPE">
+</datalist>
 
 <select id="st">
 <option>TRABALHANDO</option>
@@ -216,9 +244,7 @@ font-size:11px;
 <option>FINALIZADA</option>
 </select>
 
-<input id="ci"
-type="number"
-placeholder="CI">
+<input id="ci" type="number" placeholder="CI">
 
 <select id="utd">
 <option>GOIANA</option>
@@ -232,21 +258,15 @@ placeholder="CI">
 
 <label>Data/Hora:</label>
 
-<input id="dataOc"
-type="datetime-local">
+<input id="dataOc" type="datetime-local">
 
 <br>
 
-<button id="btnAdd"
-onclick="add()">
+<button id="btnAdd" onclick="add()">Adicionar</button>
 
-Adicionar
+<button onclick="limpar()">Limpar Tudo</button>
 
-</button>
-
-<button onclick="visualizar()">
-Visualizar
-</button>
+<button onclick="visualizar()">Visualizar</button>
 
 <div id="lista" class="card"></div>
 
@@ -254,16 +274,11 @@ Visualizar
 
 <div id="tela2">
 
-<button onclick="voltar()">
-Voltar
-</button>
+<button onclick="voltar()">Voltar</button>
 
-<button onclick="gerar()">
-Gerar Imagem
-</button>
+<button onclick="gerar()">Gerar Imagem</button>
 
-<div id="relatorio"
-class="card"></div>
+<div id="relatorio" class="card"></div>
 
 </div>
 
@@ -275,25 +290,88 @@ const URL_SCRIPT =
 let dados=[];
 let editIndex=null;
 
-function carregar(){
+const processos={
+ENG1022:"OBRA",
+ENG1023:"MANUTENÇÃO",
+ENG1024:"OBRA",
+ENG1025:"OBRA",
+ENG1026:"OBRA",
+ENG1027:"MANUTENÇÃO",
+ENG1028:"OBRA",
+ENG1029:"OBRA",
+ENG1030:"OBRA",
+ENG1031:"OBRA",
+ENG1032:"MANUTENÇÃO",
+ENG1033:"OBRA",
+ENG1034:"OBRA",
+ENG1035:"OBRA",
+ENG2012:"OBRA",
+ENG2013:"OBRA",
+ENG2014:"OBRA",
+ENG2015:"OBRA",
+ENG2016:"OBRA",
+ENG2017:"OBRA",
+ENG2018:"OBRA",
+ENG2019:"OBRA",
+ENG2020:"OBRA",
+ENG2022:"OBRA",
+ENG5003:"MANUTENÇÃO"
+};
 
-fetch(URL_SCRIPT)
+const bases={
+ENG1022:"CARPINA",
+ENG1023:"CARPINA",
+ENG1024:"CARPINA",
+ENG1025:"CARPINA",
+ENG1026:"CARPINA",
+ENG1027:"CARPINA",
+ENG1028:"IGARASSU",
+ENG1029:"CARPINA",
+ENG1030:"CARPINA",
+ENG1031:"CARPINA",
+ENG1032:"CARPINA",
+ENG1033:"IGARASSU",
+ENG1034:"IGARASSU",
+ENG1035:"IGARASSU",
+ENG2012:"CARPINA",
+ENG2013:"CARPINA",
+ENG2014:"CARPINA",
+ENG2015:"CARPINA",
+ENG2016:"CARPINA",
+ENG2017:"CARPINA",
+ENG2018:"CARPINA",
+ENG2019:"CARPINA",
+ENG2020:"IGARASSU",
+ENG2022:"CARPINA",
+ENG5003:"CARPINA"
+};
 
-.then(r=>r.json())
+async function carregar(){
 
-.then(res=>{
+try{
 
-dados = res;
+const resposta =
+await fetch(URL_SCRIPT);
+
+dados =
+await resposta.json();
 
 render();
 
-})
+}catch(erro){
 
-.catch(err=>{
+console.log(erro);
 
-console.log(err);
+}
 
-});
+}
+
+function salvar(){
+
+localStorage.setItem(
+"dadosOcorrencias",
+JSON.stringify(dados)
+);
 
 }
 
@@ -303,9 +381,9 @@ let agora=new Date();
 
 let ano=agora.getFullYear();
 
-let mes=
-String(agora.getMonth()+1)
-.padStart(2,"0");
+let mes=String(
+agora.getMonth()+1
+).padStart(2,"0");
 
 return `${ano}_${mes}_${numero}`;
 
@@ -326,7 +404,27 @@ return "statusVerde";
 
 }
 
-function add(){
+async function enviarParaPlanilha(item){
+
+try{
+
+await fetch(URL_SCRIPT,{
+
+method:"POST",
+
+body:JSON.stringify(item)
+
+});
+
+}catch(erro){
+
+console.log(erro);
+
+}
+
+}
+
+async function add(){
 
 if(!oc.value ||
 !eq.value ||
@@ -365,26 +463,15 @@ btnAdd.innerText="Adicionar";
 
 }
 
-fetch(URL_SCRIPT,{
-
-method:"POST",
-
-body:JSON.stringify(item)
-
-})
-.then(r=>r.text())
-.then(()=>{
-
-carregar();
-
-})
-.catch(err=>{
-
-console.log(err);
-
-});
+await enviarParaPlanilha(item);
 
 limparCampos();
+
+salvar();
+
+await carregar();
+
+render();
 
 }
 
@@ -394,7 +481,7 @@ let d=dados[i];
 
 oc.value=d.oc;
 eq.value=d.eq;
-st.value=d.st || "TRABALHANDO";
+st.value=d.st;
 ci.value=d.ci;
 utd.value=d.utd;
 dataOc.value=d.data;
@@ -414,9 +501,26 @@ dataOc.value="";
 
 }
 
+function limpar(){
+
+if(!confirm("Apagar tudo?"))
+return;
+
+dados=[];
+
+localStorage.removeItem(
+"dadosOcorrencias"
+);
+
+render();
+
+}
+
 function excluir(i){
 
 dados.splice(i,1);
+
+salvar();
 
 render();
 
@@ -443,12 +547,10 @@ function ordenar(lista){
 return lista.sort((a,b)=>{
 
 let ordem={
-
 "TRABALHANDO":1,
 "DESLOCAMENTO":2,
 "EM ESPERA":3,
 "FINALIZADA":4
-
 };
 
 return ordem[a.st]-ordem[b.st];
@@ -511,23 +613,47 @@ let totalOc=
 listaOrdenada.length;
 
 let statusCount={
-
 TRABALHANDO:0,
 DESLOCAMENTO:0,
 "EM ESPERA":0,
 FINALIZADA:0
-
 };
+
+let processoCount={};
+
+let baseCount={};
 
 listaOrdenada.forEach(d=>{
 
 if(d.st!="FINALIZADA"){
-
 totalCI += Number(d.ci);
-
 }
 
 statusCount[d.st]++;
+
+let processo=processos[d.eq];
+
+if(processo){
+
+if(!processoCount[processo]){
+processoCount[processo]=0;
+}
+
+processoCount[processo]++;
+
+}
+
+let base=bases[d.eq];
+
+if(base){
+
+if(!baseCount[base]){
+baseCount[base]=0;
+}
+
+baseCount[base]++;
+
+}
 
 });
 
@@ -569,7 +695,7 @@ ${gerarNumeroOcorrencia(d.oc)}
 <div>${d.eq}</div>
 
 <div class="${classeStatus(d.st)}">
-${d.st || "TRABALHANDO"}
+${d.st}
 </div>
 
 <div>
@@ -612,6 +738,54 @@ CI Total
 ${totalCI}
 </div>
 
+<div class="cardResumo">
+OCs Em Execução
+<br><br>
+${statusCount["TRABALHANDO"]}
+</div>
+
+<div class="cardResumo">
+OCs Em Deslocamento
+<br><br>
+${statusCount["DESLOCAMENTO"]}
+</div>
+
+<div class="cardResumo">
+OCs Em Espera
+<br><br>
+${statusCount["EM ESPERA"]}
+</div>
+
+<div class="cardResumo">
+OCs Finalizadas
+<br><br>
+${statusCount["FINALIZADA"]}
+</div>
+
+<div class="cardResumo">
+TP-Obra
+<br><br>
+${processoCount["OBRA"] || 0}
+</div>
+
+<div class="cardResumo">
+TP-Manutenção
+<br><br>
+${processoCount["MANUTENÇÃO"] || 0}
+</div>
+
+<div class="cardResumo">
+Base Carp.
+<br><br>
+${baseCount["CARPINA"] || 0}
+</div>
+
+<div class="cardResumo">
+Base Igara.
+<br><br>
+${baseCount["IGARASSU"] || 0}
+</div>
+
 </div>
 
 <div class="rodape">
@@ -637,10 +811,8 @@ function gerar(){
 window.scrollTo(0,0);
 
 html2canvas(relatorio,{
-
 scale:3,
 useCORS:true
-
 }).then(canvas=>{
 
 let link=
