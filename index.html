@@ -143,7 +143,6 @@ text-align:center;
 font-size:11px;
 font-weight:bold;
 min-height:60px;
-
 display:flex;
 flex-direction:column;
 justify-content:center;
@@ -287,8 +286,8 @@ font-size:11px;
 const URL_SCRIPT =
 "https://script.google.com/macros/s/AKfycbxoi65giqjzjjkHGXstVI6eu9bsjcLAT0uxCnSPWO__UcNRrFR7UMAxPO90C75GQ7rcEw/exec";
 
-let dados = [];
-let editIndex = null;
+let dados=[];
+let editIndex=null;
 
 const processos={
 ENG1022:"OBRA",
@@ -365,7 +364,9 @@ JSON.stringify(dados)
 function carregarLocal(){
 
 let salvo =
-localStorage.getItem("dadosOcorrencias");
+localStorage.getItem(
+"dadosOcorrencias"
+);
 
 if(salvo){
 
@@ -381,33 +382,26 @@ async function sincronizarOnline(){
 
 try{
 
-const resposta = await fetch(URL_SCRIPT);
+const resposta =
+await fetch(URL_SCRIPT);
 
-let online = await resposta.json();
+let online =
+await resposta.json();
 
 if(Array.isArray(online)){
 
-let local =
-JSON.parse(
-localStorage.getItem("dadosOcorrencias")
-|| "[]"
-);
+online.forEach(item=>{
 
-online.forEach(itemOnline => {
+let existe =
+dados.find(d => d.id === item.id);
 
-const existe = local.find(
-x => x.id === itemOnline.id
-);
+if(existe){
 
-if(!existe){
-
-local.push(itemOnline);
+Object.assign(existe,item);
 
 }
 
 });
-
-dados = local;
 
 salvarLocal();
 
@@ -477,22 +471,16 @@ async function add(){
 if(!oc.value || !eq.value || !ci.value || !dataOc.value)
 return alert("Preencha tudo");
 
-let idAtual = "";
-let dataOriginal = dataOc.value;
+let idAtual="";
 
-if(editIndex === null){
+if(editIndex===null){
 
-idAtual = gerarId();
+idAtual=gerarId();
 
 }else{
 
-idAtual = dados[editIndex].id;
-
-if(!dataOc.value){
-
-dataOriginal = dados[editIndex].data;
-
-}
+idAtual=
+dados[editIndex].id || gerarId();
 
 }
 
@@ -504,7 +492,11 @@ eq:eq.value,
 st:st.value,
 ci:Number(ci.value),
 utd:utd.value,
-data:dataOriginal
+
+/* DATA NÃO SOME MAIS */
+data:
+dataOc.value ||
+dados[editIndex]?.data || ""
 
 };
 
@@ -534,18 +526,32 @@ limparCampos();
 
 function editar(i){
 
-let d=dados[i];
+let d = dados[i];
 
-oc.value=d.oc;
-eq.value=d.eq;
-st.value=d.st;
-ci.value=d.ci;
-utd.value=d.utd;
-dataOc.value=d.data;
+oc.value = d.oc || "";
+eq.value = d.eq || "";
+st.value = d.st || "TRABALHANDO";
+ci.value = d.ci || "";
+utd.value = d.utd || "GOIANA";
 
-editIndex=i;
+if(d.data){
 
-btnAdd.innerText="Atualizar";
+let dataFormatada =
+new Date(d.data)
+.toISOString()
+.slice(0,16);
+
+dataOc.value = dataFormatada;
+
+}else{
+
+dataOc.value = "";
+
+}
+
+editIndex = i;
+
+btnAdd.innerText = "Atualizar";
 
 }
 
@@ -868,7 +874,6 @@ link.click();
 }
 
 carregarLocal();
-sincronizarOnline();
 
 </script>
 
