@@ -349,9 +349,7 @@ ENG5003:"CARPINA"
 function gerarId(){
 
 return Date.now() + "_" +
-Math.random()
-.toString(36)
-.substring(2,8);
+Math.random().toString(36).substring(2,8);
 
 }
 
@@ -367,9 +365,7 @@ JSON.stringify(dados)
 function carregarLocal(){
 
 let salvo =
-localStorage.getItem(
-"dadosOcorrencias"
-);
+localStorage.getItem("dadosOcorrencias");
 
 if(salvo){
 
@@ -385,11 +381,9 @@ async function sincronizarOnline(){
 
 try{
 
-const resposta =
-await fetch(URL_SCRIPT);
+const resposta = await fetch(URL_SCRIPT);
 
-let online =
-await resposta.json();
+let online = await resposta.json();
 
 if(Array.isArray(online)){
 
@@ -442,11 +436,11 @@ console.log("Erro envio:",erro);
 
 function gerarNumeroOcorrencia(numero){
 
-let agora=new Date();
+let agora = new Date();
 
-let ano=agora.getFullYear();
+let ano = agora.getFullYear();
 
-let mes=String(
+let mes = String(
 agora.getMonth()+1
 ).padStart(2,"0");
 
@@ -475,6 +469,7 @@ if(!oc.value || !eq.value || !ci.value || !dataOc.value)
 return alert("Preencha tudo");
 
 let idAtual = "";
+let dataOriginal = dataOc.value;
 
 if(editIndex === null){
 
@@ -482,8 +477,13 @@ idAtual = gerarId();
 
 }else{
 
-idAtual =
-dados[editIndex].id || gerarId();
+idAtual = dados[editIndex].id;
+
+if(!dataOc.value){
+
+dataOriginal = dados[editIndex].data;
+
+}
 
 }
 
@@ -495,7 +495,7 @@ eq:eq.value,
 st:st.value,
 ci:Number(ci.value),
 utd:utd.value,
-data:dataOc.value
+data:dataOriginal
 
 };
 
@@ -518,8 +518,6 @@ salvarLocal();
 render();
 
 await enviarParaPlanilha(item);
-
-await sincronizarOnline();
 
 limparCampos();
 
@@ -771,54 +769,6 @@ CI Total
 ${totalCI}
 </div>
 
-<div class="cardResumo">
-OCs Em Execução
-<br><br>
-${statusCount["TRABALHANDO"]}
-</div>
-
-<div class="cardResumo">
-OCs Em Deslocamento
-<br><br>
-${statusCount["DESLOCAMENTO"]}
-</div>
-
-<div class="cardResumo">
-OCs Em Espera
-<br><br>
-${statusCount["EM ESPERA"]}
-</div>
-
-<div class="cardResumo">
-OCs Finalizadas
-<br><br>
-${statusCount["FINALIZADA"]}
-</div>
-
-<div class="cardResumo">
-TP-Obra
-<br><br>
-${processoCount["OBRA"] || 0}
-</div>
-
-<div class="cardResumo">
-TP-Manutenção
-<br><br>
-${processoCount["MANUTENÇÃO"] || 0}
-</div>
-
-<div class="cardResumo">
-Base Carp.
-<br><br>
-${baseCount["CARPINA"] || 0}
-</div>
-
-<div class="cardResumo">
-Base Igara.
-<br><br>
-${baseCount["IGARASSU"] || 0}
-</div>
-
 </div>
 
 <div class="rodape">
@@ -861,7 +811,6 @@ link.click();
 }
 
 carregarLocal();
-
 sincronizarOnline();
 
 </script>
