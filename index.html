@@ -208,6 +208,7 @@ font-size:11px;
 <input id="eq" list="listaEquipes" placeholder="Equipe">
 
 <datalist id="listaEquipes">
+
 <option value="ENG1022">
 <option value="ENG1023">
 <option value="ENG1024">
@@ -233,7 +234,14 @@ font-size:11px;
 <option value="ENG2020">
 <option value="ENG2022">
 <option value="ENG5003">
+
 <option value="SEM EQUIPE">
+
+<option value="LV">
+<option value="TP">
+<option value="LV+TP">
+<option value="TP+RÇ">
+
 </datalist>
 
 <select id="st">
@@ -290,6 +298,7 @@ let dados=[];
 let editIndex=null;
 
 const processos={
+
 ENG1022:"OBRA",
 ENG1023:"MANUTENÇÃO",
 ENG1024:"OBRA",
@@ -315,9 +324,11 @@ ENG2019:"OBRA",
 ENG2020:"OBRA",
 ENG2022:"OBRA",
 ENG5003:"MANUTENÇÃO"
+
 };
 
 const bases={
+
 ENG1022:"CARPINA",
 ENG1023:"CARPINA",
 ENG1024:"CARPINA",
@@ -343,6 +354,7 @@ ENG2019:"CARPINA",
 ENG2020:"IGARASSU",
 ENG2022:"CARPINA",
 ENG5003:"CARPINA"
+
 };
 
 function gerarId(){
@@ -373,45 +385,6 @@ if(salvo){
 dados = JSON.parse(salvo);
 
 render();
-
-}
-
-}
-
-async function sincronizarOnline(){
-
-try{
-
-const resposta =
-await fetch(URL_SCRIPT);
-
-let online =
-await resposta.json();
-
-if(Array.isArray(online)){
-
-online.forEach(item=>{
-
-let existe =
-dados.find(d => d.id === item.id);
-
-if(existe){
-
-Object.assign(existe,item);
-
-}
-
-});
-
-salvarLocal();
-
-render();
-
-}
-
-}catch(erro){
-
-console.log("Erro sync:",erro);
 
 }
 
@@ -493,7 +466,6 @@ st:st.value,
 ci:Number(ci.value),
 utd:utd.value,
 
-/* DATA NÃO SOME MAIS */
 data:
 dataOc.value ||
 dados[editIndex]?.data || ""
