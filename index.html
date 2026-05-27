@@ -387,18 +387,27 @@ let online = await resposta.json();
 
 if(Array.isArray(online)){
 
-online = online.map(item => ({
+let local =
+JSON.parse(
+localStorage.getItem("dadosOcorrencias")
+|| "[]"
+);
 
-...item,
+online.forEach(itemOnline => {
 
-id:
-item.id && item.id !== ""
-? item.id
-: gerarId()
+const existe = local.find(
+x => x.id === itemOnline.id
+);
 
-}));
+if(!existe){
 
-dados = online;
+local.push(itemOnline);
+
+}
+
+});
+
+dados = local;
 
 salvarLocal();
 
@@ -436,11 +445,11 @@ console.log("Erro envio:",erro);
 
 function gerarNumeroOcorrencia(numero){
 
-let agora = new Date();
+let agora=new Date();
 
-let ano = agora.getFullYear();
+let ano=agora.getFullYear();
 
-let mes = String(
+let mes=String(
 agora.getMonth()+1
 ).padStart(2,"0");
 
@@ -767,6 +776,54 @@ ${totalOc}
 CI Total
 <br><br>
 ${totalCI}
+</div>
+
+<div class="cardResumo">
+OCs Em Execução
+<br><br>
+${statusCount["TRABALHANDO"]}
+</div>
+
+<div class="cardResumo">
+OCs Em Deslocamento
+<br><br>
+${statusCount["DESLOCAMENTO"]}
+</div>
+
+<div class="cardResumo">
+OCs Em Espera
+<br><br>
+${statusCount["EM ESPERA"]}
+</div>
+
+<div class="cardResumo">
+OCs Finalizadas
+<br><br>
+${statusCount["FINALIZADA"]}
+</div>
+
+<div class="cardResumo">
+TP-Obra
+<br><br>
+${processoCount["OBRA"] || 0}
+</div>
+
+<div class="cardResumo">
+TP-Manutenção
+<br><br>
+${processoCount["MANUTENÇÃO"] || 0}
+</div>
+
+<div class="cardResumo">
+Base Carp.
+<br><br>
+${baseCount["CARPINA"] || 0}
+</div>
+
+<div class="cardResumo">
+Base Igara.
+<br><br>
+${baseCount["IGARASSU"] || 0}
 </div>
 
 </div>
