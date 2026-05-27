@@ -388,10 +388,21 @@ try{
 const resposta =
 await fetch(URL_SCRIPT);
 
-const online =
+let online =
 await resposta.json();
 
 if(Array.isArray(online)){
+
+online = online.map(item => ({
+
+...item,
+
+id:
+item.id && item.id !== ""
+? item.id
+: gerarId()
+
+}));
 
 dados = online;
 
@@ -463,13 +474,22 @@ async function add(){
 if(!oc.value || !eq.value || !ci.value || !dataOc.value)
 return alert("Preencha tudo");
 
+let idAtual = "";
+
+if(editIndex === null){
+
+idAtual = gerarId();
+
+}else{
+
+idAtual =
+dados[editIndex].id || gerarId();
+
+}
+
 let item={
 
-id:
-editIndex===null
-? gerarId()
-: dados[editIndex].id,
-
+id:idAtual,
 oc:oc.value,
 eq:eq.value,
 st:st.value,
