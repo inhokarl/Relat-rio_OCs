@@ -264,6 +264,8 @@ font-size:11px;
 <br>
 
 <label>Data/Hora:</label>
+<label>Mês:</label>
+<input id="mesOc" type="month">
 
 <input id="dataOc" type="datetime-local">
 
@@ -410,15 +412,15 @@ console.log("Erro envio:",erro);
 
 }
 
-function gerarNumeroOcorrencia(numero){
+function gerarNumeroOcorrencia(numero, mesSelecionado){
 
-let agora=new Date();
+if(!mesSelecionado)
+return numero;
 
-let ano=agora.getFullYear();
+let partes = mesSelecionado.split("-");
 
-let mes=String(
-agora.getMonth()+1
-).padStart(2,"0");
+let ano = partes[0];
+let mes = partes[1];
 
 return `${ano}_${mes}_${numero}`;
 
@@ -468,7 +470,11 @@ utd:utd.value,
 
 data:
 dataOc.value ||
-dados[editIndex]?.data || ""
+dados[editIndex]?.data || "",
+
+mes:
+mesOc.value ||
+dados[editIndex]?.mes || ""
 
 };
 
@@ -505,6 +511,7 @@ eq.value = d.eq || "";
 st.value = d.st || "TRABALHANDO";
 ci.value = d.ci || "";
 utd.value = d.utd || "GOIANA";
+mesOc.value = d.mes || "";
 
 if(d.data){
 
@@ -533,6 +540,7 @@ oc.value="";
 eq.value="";
 ci.value="";
 dataOc.value="";
+mesOc.value="";
 
 }
 
@@ -597,7 +605,7 @@ lista.innerHTML=dados.map((d,i)=>`
 
 <div>
 
-<b>${gerarNumeroOcorrencia(d.oc)}</b>
+<b>${gerarNumeroOcorrencia(d.oc,d.mes)}</b>
 
 <br>
 
@@ -713,7 +721,7 @@ ${listaOrdenada.map(d=>`
 <div class="linha">
 
 <div>
-${gerarNumeroOcorrencia(d.oc)}
+${gerarNumeroOcorrencia(d.oc,d.mes)}
 </div>
 
 <div>${d.eq}</div>
