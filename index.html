@@ -515,16 +515,20 @@ mesOc.value = d.mes || "";
 
 if(d.data){
 
-let dataFormatada =
-new Date(d.data)
-.toISOString()
-.slice(0,16);
+const data = new Date(d.data);
 
-dataOc.value = dataFormatada;
+const ano = data.getFullYear();
+const mes = String(data.getMonth()+1).padStart(2,"0");
+const dia = String(data.getDate()).padStart(2,"0");
+const hora = String(data.getHours()).padStart(2,"0");
+const minuto = String(data.getMinutes()).padStart(2,"0");
+
+dataOc.value =
+`${ano}-${mes}-${dia}T${hora}:${minuto}`;
 
 }else{
 
-dataOc.value = "";
+dataOc.value="";
 
 }
 
