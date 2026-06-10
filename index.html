@@ -12,45 +12,55 @@
 
 <style>
 
-body{
-font-family:Arial;
-background:#f0f4f8;
-padding:8px;
+*{
+box-sizing:border-box;
 margin:0;
+padding:0;
+}
+
+body{
+font-family:'Segoe UI',Arial,sans-serif;
+background:#edf2f7;
+padding:8px;
 }
 
 h2{
 color:#003A8F;
-font-size:22px;
+margin-bottom:15px;
 }
 
-input,select{
-padding:8px;
+input,
+select{
+padding:10px;
 margin:4px;
-width:160px;
-border:1px solid #ccc;
-border-radius:6px;
+width:170px;
+border:1px solid #d7dde5;
+border-radius:10px;
 font-size:14px;
+background:#fff;
 }
 
 button{
-padding:8px 12px;
+padding:10px 14px;
 margin:5px;
 border:none;
-border-radius:6px;
+border-radius:10px;
 background:#003A8F;
 color:#fff;
-font-weight:bold;
+font-weight:600;
 cursor:pointer;
-font-size:12px;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-1px);
 }
 
 .card{
 background:#fff;
-padding:12px;
-border-radius:14px;
-box-shadow:0 2px 8px rgba(0,0,0,0.1);
-margin-top:10px;
+border-radius:24px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+margin-top:12px;
 overflow:hidden;
 }
 
@@ -58,110 +68,12 @@ overflow:hidden;
 display:none;
 }
 
-.titulo{
-text-align:center;
-font-size:18px;
-font-weight:bold;
-color:#003A8F;
-margin-top:5px;
-}
-
-.dataTopo{
-text-align:center;
-font-size:10px;
-color:#666;
-margin-bottom:12px;
-}
-
-.tabela{
-width:100%;
-}
-
-.linha{
-display:grid;
-grid-template-columns:
-1.3fr
-1fr
-1.2fr
-0.7fr
-0.8fr
-0.8fr
-1fr;
-gap:4px;
-padding:7px 3px;
-border-bottom:1px solid #eee;
-font-size:10px;
-align-items:center;
-text-align:center;
-}
-
-.topoTabela{
-background:#003A8F;
-color:#fff;
-font-weight:bold;
-border-radius:6px;
-font-size:9px;
-}
-
-.horas{
-color:red;
-font-weight:bold;
-}
-
-.statusAzul{
-color:#1565c0;
-font-weight:bold;
-}
-
-.statusLaranja{
-color:#fb8c00;
-font-weight:bold;
-}
-
-.statusVermelho{
-color:#e53935;
-font-weight:bold;
-}
-
-.statusVerde{
-color:#43a047;
-font-weight:bold;
-}
-
-.cards{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:6px;
-margin-top:14px;
-}
-
-.cardResumo{
-background:#e6f0ff;
-padding:10px;
-border-radius:12px;
-text-align:center;
-font-size:11px;
-font-weight:bold;
-min-height:60px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-}
-
-.rodape{
-text-align:center;
-margin-top:12px;
-font-size:11px;
-font-weight:bold;
-}
-
 .listaItem{
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:10px;
+padding:12px;
 border-bottom:1px solid #eee;
-font-size:12px;
 }
 
 .botoes{
@@ -170,27 +82,223 @@ gap:5px;
 }
 
 .editar{
-background:orange;
+background:#fb8c00;
 }
 
 .excluir{
-background:red;
+background:#e53935;
+}
+
+.cabecalhoRelatorio{
+background:linear-gradient(
+135deg,
+#003A8F 0%,
+#0B57D0 60%,
+#00B050 100%
+);
+
+padding:15px;
+color:white;
+}
+
+.topoFlex{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+}
+
+.logoEsquerda{
+width:90px;
+height:90px;
+border-radius:20px;
+background:rgba(255,255,255,.15);
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:48px;
+backdrop-filter:blur(4px);
+}
+
+.tituloCentral{
+flex:1;
+}
+
+.tituloCentral h1{
+font-size:20px;
+font-weight:800;
+line-height:1.1;
+}
+
+.infoData{
+margin-top:8px;
+font-size:14px;
+opacity:.95;
+}
+
+.tabela{
+background:#fff;
+overflow:hidden;
+}
+
+.linha{
+display:grid;
+grid-template-columns:
+1.8fr
+1.2fr
+1.8fr
+0.6fr
+0.9fr
+0.8fr
+1.1fr;
+
+gap:4px;
+padding:10px 4px;
+align-items:center;
+text-align:center;
+font-size:8px;
+border-bottom:1px solid #eef2f7;
+}
+
+.linha:not(.topoTabela) div{
+font-weight:bold;
+}
+
+.topoTabela{
+background:#003A8F;
+color:white;
+font-weight:700;
+}
+
+.statusBadge{
+padding:6px 10px;
+border-radius:20px;
+font-size:10px;
+max-width:140px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.statusAzul{
+background:#1976d2;
+color:white;
+}
+
+.statusLaranja{
+background:#fb8c00;
+color:white;
+}
+
+.statusVermelho{
+background:#e53935;
+color:white;
+}
+
+.statusVerde{
+background:#43a047;
+color:white;
+}
+
+.horas{
+font-weight:bold;
+color:#e53935;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+padding:15px;
+}
+
+.cardResumo{
+background:white;
+border-left:6px solid #003A8F;
+border-radius:16px;
+padding:15px;
+box-shadow:0 3px 12px rgba(0,0,0,.06);
+display:flex;
+align-items:center;
+gap:12px;
+min-height:90px;
+}
+
+.cardIcone{
+font-size:28px;
+}
+
+.cardTexto span{
+display:block;
+font-size:12px;
+font-weight:600;
+color:#666;
+}
+
+.cardTexto strong{
+font-size:28px;
+color:#003A8F;
+}
+
+.rodape{
+background:#003A8F;
+color:white;
+text-align:center;
+padding:16px;
+font-weight:700;
+font-size:16px;
 }
 
 @media(min-width:700px){
 
 .cards{
-grid-template-columns:repeat(4,1fr);
+grid-template-columns:repeat(5,1fr);
 }
 
 .linha{
-font-size:12px;
+font-size:13px;
 }
 
-.topoTabela{
-font-size:11px;
 }
 
+.cardResumo:nth-child(1){
+border-left-color:#003A8F;
+}
+
+.cardResumo:nth-child(2){
+border-left-color:#00B050;
+}
+
+.cardResumo:nth-child(3){
+border-left-color:#43A047;
+}
+
+.cardResumo:nth-child(4){
+border-left-color:#FB8C00;
+}
+
+.cardResumo:nth-child(5){
+border-left-color:#E53935;
+}
+
+.cardResumo:nth-child(6){
+border-left-color:#26A69A;
+}
+
+.cardResumo:nth-child(7){
+border-left-color:#1976D2;
+}
+
+.cardResumo:nth-child(8){
+border-left-color:#8E24AA;
+}
+
+.cardResumo:nth-child(9){
+border-left-color:#6D4C41;
+}
+
+.cardResumo:nth-child(10){
+border-left-color:#546E7A;
 }
 
 </style>
@@ -700,12 +808,34 @@ let dataAtual=new Date().toLocaleString();
 
 relatorio.innerHTML=`
 
-<div class="titulo">
-ACOMPANHAMENTO-TP-LV-ENERGY
+<div class="cabecalhoRelatorio">
+
+<div class="topoFlex">
+
+<div class="logoEsquerda">
+⚡
 </div>
 
-<div class="dataTopo">
-${dataAtual}
+<div class="tituloCentral">
+
+<h1>
+ACOMPANHAMENTO
+<br>
+TP-LV ENERGY
+</h1>
+
+<div class="infoData">
+
+📅 ${new Date().toLocaleDateString('pt-BR')}
+&nbsp;&nbsp;&nbsp;
+🕒 ${new Date().toLocaleTimeString('pt-BR')}
+
+</div>
+
+</div>
+
+</div>
+
 </div>
 
 <div class="tabela">
@@ -713,12 +843,12 @@ ${dataAtual}
 <div class="linha topoTabela">
 
 <div>OC</div>
-<div>Equipe</div>
-<div>Status</div>
+<div>EQUIPE</div>
+<div>STATUS</div>
 <div>CI</div>
 <div>UTD</div>
-<div>Tempo</div>
-<div>Dt Solic.</div>
+<div>TEMPO</div>
+<div>ABERTURA</div>
 
 </div>
 
@@ -730,17 +860,27 @@ ${listaOrdenada.map(d=>`
 ${gerarNumeroOcorrencia(d.oc,d.mes)}
 </div>
 
-<div>${d.eq}</div>
+<div>
+${d.eq}
+</div>
 
-<div class="${classeStatus(d.st)}">
+<div>
+
+<span class="statusBadge ${classeStatus(d.st)}">
+
 ${d.st}
+
+</span>
+
 </div>
 
 <div>
 ${d.st=="FINALIZADA" ? "-" : d.ci}
 </div>
 
-<div>${d.utd}</div>
+<div>
+${d.utd}
+</div>
 
 <div class="horas">
 ${horasDecorridas(d.data,d.st)}h
@@ -752,76 +892,98 @@ ${new Date(d.data).toLocaleDateString()}
 
 </div>
 
-`).join('')}
+`).join("")}
 
 </div>
 
 <div class="cards">
 
 <div class="cardResumo">
-Total OCs
-<br><br>
-${totalOc}
+<div class="cardIcone">📋</div>
+<div class="cardTexto">
+<span>Total OCs</span>
+<strong>${totalOc}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-CI Total
-<br><br>
-${totalCI}
+<div class="cardIcone">💡</div>
+<div class="cardTexto">
+<span>CI Total</span>
+<strong>${totalCI}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-OCs Em Execução
-<br><br>
-${statusCount["TRABALHANDO"]}
+<div class="cardIcone">🟢</div>
+<div class="cardTexto">
+<span>Execução</span>
+<strong>${statusCount["TRABALHANDO"]}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-OCs Em Deslocamento
-<br><br>
-${statusCount["DESLOCAMENTO"]}
+<div class="cardIcone">🚛</div>
+<div class="cardTexto">
+<span>Deslocamento</span>
+<strong>${statusCount["DESLOCAMENTO"]}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-OCs Em Espera
-<br><br>
-${statusCount["EM ESPERA"]}
+<div class="cardIcone">⏳</div>
+<div class="cardTexto">
+<span>Em Espera</span>
+<strong>${statusCount["EM ESPERA"]}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-OCs Finalizadas
-<br><br>
-${statusCount["FINALIZADA"]}
+<div class="cardIcone">✅</div>
+<div class="cardTexto">
+<span>Finalizadas</span>
+<strong>${statusCount["FINALIZADA"]}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-TP-Obra
-<br><br>
-${processoCount["OBRA"] || 0}
+<div class="cardIcone">🏗️</div>
+<div class="cardTexto">
+<span>TP-Obra</span>
+<strong>${processoCount["OBRA"] || 0}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-TP-Manutenção
-<br><br>
-${processoCount["MANUTENÇÃO"] || 0}
+<div class="cardIcone">🔧</div>
+<div class="cardTexto">
+<span>Manutenção</span>
+<strong>${processoCount["MANUTENÇÃO"] || 0}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-Base Carp.
-<br><br>
-${baseCount["CARPINA"] || 0}
+<div class="cardIcone">📍</div>
+<div class="cardTexto">
+<span>Base Carpina</span>
+<strong>${baseCount["CARPINA"] || 0}</strong>
+</div>
 </div>
 
 <div class="cardResumo">
-Base Igara.
-<br><br>
-${baseCount["IGARASSU"] || 0}
+<div class="cardIcone">📍</div>
+<div class="cardTexto">
+<span>Base Igarassu</span>
+<strong>${baseCount["IGARASSU"] || 0}</strong>
+</div>
 </div>
 
 </div>
 
 <div class="rodape">
-Manutenção, UTEP Setor Norte
+
+⚡ MANUTENÇÃO UTEP NORTE ⚡
+
 </div>
 
 `;
@@ -843,8 +1005,11 @@ function gerar(){
 window.scrollTo(0,0);
 
 html2canvas(relatorio,{
-scale:3,
-useCORS:true
+scale:4,
+backgroundColor:"#ffffff",
+useCORS:true,
+allowTaint:true,
+logging:false
 }).then(canvas=>{
 
 let link=document.createElement('a');
