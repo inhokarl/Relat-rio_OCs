@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>App Ocorrências</title>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+body{
+font-family:'Segoe UI',Arial,sans-serif;
+background:#edf2f7;
+padding:8px;
+}
+
+h2{
+color:#003A8F;
+margin-bottom:15px;
+}
+
+input,
+select{
+padding:10px;
+margin:4px;
+width:170px;
+border:1px solid #d7dde5;
+border-radius:10px;
+font-size:14px;
+background:#fff;
+}
+
+button{
+padding:10px 14px;
+margin:5px;
+border:none;
+border-radius:10px;
+background:#003A8F;
+color:#fff;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+transform:translateY(-1px);
+}
+
+.card{
+background:#fff;
+border-radius:24px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+margin-top:12px;
+overflow:hidden;
+}
+
+#tela2{
+display:none;
+}
+
+.listaItem{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+border-bottom:1px solid #eee;
+}
+
+.botoes{
+display:flex;
+gap:5px;
+}
+
+.editar{
+background:#fb8c00;
+}
+
+.excluir{
+background:#e53935;
+}
+
+.cabecalhoRelatorio{
+background:linear-gradient(
+135deg,
+#003A8F 0%,
+#0B57D0 60%,
+#00B050 100%
+);
+
+padding:15px;
+color:white;
+}
+
+.topoFlex{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+}
+
+.logoEsquerda{
+width:90px;
+height:90px;
+border-radius:20px;
+background:rgba(255,255,255,.15);
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:48px;
+backdrop-filter:blur(4px);
+}
+
+.tituloCentral{
+flex:1;
+}
+
+.tituloCentral h1{
+font-size:20px;
+font-weight:800;
+line-height:1.1;
+}
+
+.infoData{
+margin-top:8px;
+font-size:14px;
+opacity:.95;
+}
+
+.tabela{
+background:#fff;
+overflow:hidden;
+}
+
+.linha{
+display:grid;
+grid-template-columns:
+1.8fr
+1.2fr
+1.8fr
+0.6fr
+0.9fr
+0.8fr
+1.1fr;
+
+gap:4px;
+padding:10px 4px;
+align-items:center;
+text-align:center;
+font-size:8px;
+border-bottom:1px solid #eef2f7;
+}
+
+.linha:not(.topoTabela) div{
+font-weight:bold;
+}
+
+.topoTabela{
+background:#003A8F;
+color:white;
+font-weight:700;
+}
+
+.statusBadge{
+padding:6px 10px;
+border-radius:20px;
+font-size:10px;
+max-width:140px;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+}
+
+.statusAzul{
+background:#1976d2;
+color:white;
+}
+
+.statusLaranja{
+background:#fb8c00;
+color:white;
+}
+
+.statusVermelho{
+background:#e53935;
+color:white;
+}
+
+.statusVerde{
+background:#43a047;
+color:white;
+}
+
+.horas{
+font-weight:bold;
+color:#e53935;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+padding:15px;
+}
+
+.cardResumo{
+background:white;
+border-left:6px solid #003A8F;
+border-radius:16px;
+padding:15px;
+box-shadow:0 3px 12px rgba(0,0,0,.06);
+display:flex;
+align-items:center;
+gap:12px;
+min-height:90px;
+}
+
+.cardIcone{
+font-size:28px;
+}
+
+.cardTexto span{
+display:block;
+font-size:12px;
+font-weight:600;
+color:#666;
+}
+
+.cardTexto strong{
+font-size:28px;
+color:#003A8F;
+}
+
+.rodape{
+background:#003A8F;
+color:white;
+text-align:center;
+padding:16px;
+font-weight:700;
+font-size:16px;
+}
+
+@media(min-width:700px){
+
+.cards{
+grid-template-columns:repeat(5,1fr);
+}
+
+.linha{
+font-size:13px;
+}
+
+}
+
+.cardResumo:nth-child(1){
+border-left-color:#003A8F;
+}
+
+.cardResumo:nth-child(2){
+border-left-color:#00B050;
+}
+
+.cardResumo:nth-child(3){
+border-left-color:#43A047;
+}
+
+.cardResumo:nth-child(4){
+border-left-color:#FB8C00;
+}
+
+.cardResumo:nth-child(5){
+border-left-color:#E53935;
+}
+
+.cardResumo:nth-child(6){
+border-left-color:#26A69A;
+}
+
+.cardResumo:nth-child(7){
+border-left-color:#1976D2;
+}
+
+.cardResumo:nth-child(8){
+border-left-color:#8E24AA;
+}
+
+.cardResumo:nth-child(9){
+border-left-color:#6D4C41;
+}
+
+.cardResumo:nth-child(10){
+border-left-color:#546E7A;
+}
+
+textarea{
+padding:10px;
+margin:4px;
+width:100%;
+max-width:360px;
+border:1px solid #d7dde5;
+border-radius:10px;
+font-size:14px;
+background:#fff;
+font-family:inherit;
+resize:vertical;
+min-height:70px;
+display:block;
+}
+
+.navBar{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin-bottom:10px;
+}
+
+.navBar button{
+background:#0B57D0;
+flex:1 1 0;
+min-width:100px;
+margin:0;
+white-space:nowrap;
+text-align:center;
+}
+
+.navAtiva{
+background:#00B050 !important;
+}
+
+#tela3{
+display:none;
+}
+
+.obsBloco{
+background:#fff;
+border-bottom:1px solid #eef2f7;
+padding:14px 12px;
+}
+
+.obsCabecalho{
+display:flex;
+flex-wrap:wrap;
+gap:4px 14px;
+font-size:13px;
+font-weight:700;
+color:#003A8F;
+margin-bottom:6px;
+}
+
+.obsCabecalho span b{
+color:#e53935;
+}
+
+.obsTexto{
+font-size:13px;
+color:#333;
+white-space:pre-wrap;
+line-height:1.4;
+background:#f5f7fa;
+border-radius:10px;
+padding:8px 10px;
+}
+
+.semObs{
+padding:20px;
+text-align:center;
+color:#888;
+font-size:14px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="tela1">
+
+<div class="navBar">
+<button class="navAtiva" onclick="mostrarTela('tela1')">Cadastro</button>
+<button onclick="visualizar()">Relatório Geral</button>
+<button onclick="detalhamento()">Detalhamento</button>
+</div>
+
+<h2>Cadastro</h2>
+
+<input id="oc" placeholder="Ocorrência">
+
+<input id="eq" list="listaEquipes" placeholder="Equipe">
+
+<datalist id="listaEquipes">
+
+<option value="ENG1022">
+<option value="ENG1023">
+<option value="ENG1024">
+<option value="ENG1025">
+<option value="ENG1026">
+<option value="ENG1027">
+<option value="ENG1028">
+<option value="ENG1029">
+<option value="ENG1030">
+<option value="ENG1031">
+<option value="ENG1032">
+<option value="ENG1033">
+<option value="ENG1034">
+<option value="ENG1035">
+<option value="ENG2012">
+<option value="ENG2013">
+<option value="ENG2014">
+<option value="ENG2015">
+<option value="ENG2016">
+<option value="ENG2017">
+<option value="ENG2018">
+<option value="ENG2019">
+<option value="ENG2020">
+<option value="ENG2022">
+<option value="ENG5003">
+
+<option value="SEM EQUIPE">
+
+<option value="LV">
+<option value="TP">
+<option value="LV+TP">
+<option value="TP+RÇ">
+
+</datalist>
+
+<select id="st">
+<option>TRABALHANDO</option>
+<option>DESLOCAMENTO</option>
+<option>EM ESPERA</option>
+<option>FINALIZADA</option>
+</select>
+
+<input id="ci" type="number" placeholder="CI">
+
+<select id="utd">
+<option>GOIANA</option>
+<option>PAULISTA</option>
+<option>CAMARAGIBE</option>
+<option>TIMBAÚBA</option>
+<option>CARPINA</option>
+</select>
+
+<br>
+
+<label>Mês:</label>
+<input id="mesOc" type="month">
+
+<br>
+
+<label>Data/Hora:</label>
+<input id="dataOc" type="datetime-local">
+
+<br>
+
+<label>Observação (opcional):</label>
+<textarea id="obs" placeholder="Escreva aqui uma observação, se necessário..."></textarea>
+
+<br>
+
+<button id="btnAdd" onclick="add()">Adicionar</button>
+
+<button onclick="limpar()">Limpar Tudo</button>
+
+<button onclick="visualizar()">Visualizar</button>
+
+<div id="lista" class="card"></div>
+
+</div>
+
+<div id="tela2">
+
+<div class="navBar">
+<button onclick="mostrarTela('tela1')">Cadastro</button>
+<button class="navAtiva" onclick="visualizar()">Relatório Geral</button>
+<button onclick="detalhamento()">Detalhamento</button>
+</div>
+
+<button onclick="voltar()">Voltar</button>
+
+<button onclick="gerar()">Gerar Imagem</button>
+
+<div id="relatorio" class="card"></div>
+
+</div>
+
+<div id="tela3">
+
+<div class="navBar">
+<button onclick="mostrarTela('tela1')">Cadastro</button>
+<button onclick="visualizar()">Relatório Geral</button>
+<button class="navAtiva" onclick="detalhamento()">Detalhamento</button>
+</div>
+
+<button onclick="voltar()">Voltar</button>
+
+<button onclick="gerarDetalhamento()">Gerar Relatório</button>
+
+<div id="relatorioObs" class="card"></div>
+
+</div>
+
+<script>
+
+const URL_SCRIPT =
+"https://script.google.com/macros/s/AKfycbxoi65giqjzjjkHGXstVI6eu9bsjcLAT0uxCnSPWO__UcNRrFR7UMAxPO90C75GQ7rcEw/exec";
+
+let dados=[];
+let editIndex=null;
+
+const processos={
+
+ENG1022:"OBRA",
+ENG1023:"MANUTENÇÃO",
+ENG1024:"OBRA",
+ENG1025:"OBRA",
+ENG1026:"OBRA",
+ENG1027:"MANUTENÇÃO",
+ENG1028:"OBRA",
+ENG1029:"OBRA",
+ENG1030:"OBRA",
+ENG1031:"OBRA",
+ENG1032:"MANUTENÇÃO",
+ENG1033:"OBRA",
+ENG1034:"OBRA",
+ENG1035:"OBRA",
+ENG2012:"OBRA",
+ENG2013:"OBRA",
+ENG2014:"OBRA",
+ENG2015:"OBRA",
+ENG2016:"OBRA",
+ENG2017:"OBRA",
+ENG2018:"OBRA",
+ENG2019:"OBRA",
+ENG2020:"OBRA",
+ENG2022:"OBRA",
+ENG5003:"MANUTENÇÃO"
+
+};
+
+const bases={
+
+ENG1022:"CARPINA",
+ENG1023:"CARPINA",
+ENG1024:"CARPINA",
+ENG1025:"CARPINA",
+ENG1026:"CARPINA",
+ENG1027:"CARPINA",
+ENG1028:"IGARASSU",
+ENG1029:"CARPINA",
+ENG1030:"CARPINA",
+ENG1031:"CARPINA",
+ENG1032:"CARPINA",
+ENG1033:"IGARASSU",
+ENG1034:"IGARASSU",
+ENG1035:"IGARASSU",
+ENG2012:"CARPINA",
+ENG2013:"CARPINA",
+ENG2014:"CARPINA",
+ENG2015:"CARPINA",
+ENG2016:"CARPINA",
+ENG2017:"CARPINA",
+ENG2018:"CARPINA",
+ENG2019:"CARPINA",
+ENG2020:"IGARASSU",
+ENG2022:"CARPINA",
+ENG5003:"CARPINA"
+
+};
+
+function gerarId(){
+
+return Date.now() + "_" +
+Math.random().toString(36).substring(2,8);
+
+}
+
+function salvarLocal(){
+
+localStorage.setItem(
+"dadosOcorrencias",
+JSON.stringify(dados)
+);
+
+}
+
+function carregarLocal(){
+
+let salvo =
+localStorage.getItem(
+"dadosOcorrencias"
+);
+
+if(salvo){
+
+dados = JSON.parse(salvo);
+
+render();
+
+}
+
+}
+
+async function enviarParaPlanilha(item){
+
+try{
+
+await fetch(URL_SCRIPT,{
+
+method:"POST",
+
+body:JSON.stringify(item)
+
+});
+
+}catch(erro){
+
+console.log("Erro envio:",erro);
+
+}
+
+}
+
+function gerarNumeroOcorrencia(numero, mesSelecionado){
+
+if(!mesSelecionado)
+return numero;
+
+let partes = mesSelecionado.split("-");
+
+let ano = partes[0];
+let mes = partes[1];
+
+return `${ano}_${mes}_${numero}`;
+
+}
+
+function classeStatus(status){
+
+if(status=="TRABALHANDO")
+return "statusAzul";
+
+if(status=="DESLOCAMENTO")
+return "statusLaranja";
+
+if(status=="EM ESPERA")
+return "statusVermelho";
+
+return "statusVerde";
+
+}
+
+async function add(){
+
+if(!oc.value || !eq.value || !ci.value || !dataOc.value)
+return alert("Preencha tudo");
+
+let idAtual="";
+
+if(editIndex===null){
+
+idAtual=gerarId();
+
+}else{
+
+idAtual=
+dados[editIndex].id || gerarId();
+
+}
+
+let item={
+
+id:idAtual,
+oc:oc.value,
+eq:eq.value,
+st:st.value,
+ci:Number(ci.value),
+utd:utd.value,
+
+data:
+dataOc.value ||
+dados[editIndex]?.data || "",
+
+mes:
+mesOc.value ||
+dados[editIndex]?.mes || "",
+
+obs:
+obs.value !== "" ?
+obs.value :
+(dados[editIndex]?.obs || "")
+
+};
+
+if(editIndex===null){
+
+dados.push(item);
+
+}else{
+
+dados[editIndex]=item;
+
+editIndex=null;
+
+btnAdd.innerText="Adicionar";
+
+}
+
+salvarLocal();
+
+render();
+
+await enviarParaPlanilha(item);
+
+limparCampos();
+
+}
+
+function editar(i){
+
+let d = dados[i];
+
+oc.value = d.oc || "";
+eq.value = d.eq || "";
+st.value = d.st || "TRABALHANDO";
+ci.value = d.ci || "";
+utd.value = d.utd || "GOIANA";
+mesOc.value = d.mes || "";
+obs.value = d.obs || "";
+
+if(d.data){
+
+const data = new Date(d.data);
+
+const ano = data.getFullYear();
+const mes = String(data.getMonth()+1).padStart(2,"0");
+const dia = String(data.getDate()).padStart(2,"0");
+const hora = String(data.getHours()).padStart(2,"0");
+const minuto = String(data.getMinutes()).padStart(2,"0");
+
+dataOc.value =
+`${ano}-${mes}-${dia}T${hora}:${minuto}`;
+
+}else{
+
+dataOc.value="";
+
+}
+
+editIndex = i;
+
+btnAdd.innerText = "Atualizar";
+
+}
+
+function limparCampos(){
+
+oc.value="";
+eq.value="";
+ci.value="";
+dataOc.value="";
+mesOc.value="";
+obs.value="";
+
+}
+
+function limpar(){
+
+if(!confirm("Apagar tudo?")) return;
+
+dados=[];
+
+salvarLocal();
+
+render();
+
+}
+
+function excluir(i){
+
+dados.splice(i,1);
+
+salvarLocal();
+
+render();
+
+}
+
+function horasDecorridas(data,status){
+
+if(status=="FINALIZADA") return "0.0";
+
+let inicio=new Date(data);
+
+let agora=new Date();
+
+let diff=(agora-inicio)/(1000*60*60);
+
+return diff.toFixed(1);
+
+}
+
+function ordenar(lista){
+
+return lista.sort((a,b)=>{
+
+let ordem={
+"TRABALHANDO":1,
+"DESLOCAMENTO":2,
+"EM ESPERA":3,
+"FINALIZADA":4
+};
+
+return ordem[a.st]-ordem[b.st];
+
+});
+
+}
+
+function render(){
+
+lista.innerHTML=dados.map((d,i)=>`
+
+<div class="listaItem">
+
+<div>
+
+<b>${gerarNumeroOcorrencia(d.oc,d.mes)}</b> ${d.obs ? "📝" : ""}
+
+<br>
+
+${d.eq}
+
+</div>
+
+<div class="botoes">
+
+<button class="editar"
+onclick="editar(${i})">
+
+Editar
+
+</button>
+
+<button class="excluir"
+onclick="excluir(${i})">
+
+X
+
+</button>
+
+</div>
+
+</div>
+
+`).join('');
+
+}
+
+function visualizar(){
+
+let listaOrdenada=ordenar([...dados]);
+
+let totalCI=0;
+
+let totalOc=listaOrdenada.length;
+
+let statusCount={
+TRABALHANDO:0,
+DESLOCAMENTO:0,
+"EM ESPERA":0,
+FINALIZADA:0
+};
+
+let processoCount={};
+
+let baseCount={};
+
+listaOrdenada.forEach(d=>{
+
+if(d.st!="FINALIZADA"){
+totalCI += Number(d.ci);
+}
+
+statusCount[d.st]++;
+
+let processo=processos[d.eq];
+
+if(processo){
+
+if(!processoCount[processo]){
+processoCount[processo]=0;
+}
+
+processoCount[processo]++;
+
+}
+
+let base=bases[d.eq];
+
+if(base){
+
+if(!baseCount[base]){
+baseCount[base]=0;
+}
+
+baseCount[base]++;
+
+}
+
+});
+
+let dataAtual=new Date().toLocaleString();
+
+relatorio.innerHTML=`
+
+<div class="cabecalhoRelatorio">
+
+<div class="topoFlex">
+
+<div class="logoEsquerda">
+⚡
+</div>
+
+<div class="tituloCentral">
+
+<h1>
+ACOMPANHAMENTO
+<br>
+TP-LV ENERGY
+</h1>
+
+<div class="infoData">
+
+📅 ${new Date().toLocaleDateString('pt-BR')}
+&nbsp;&nbsp;&nbsp;
+🕒 ${new Date().toLocaleTimeString('pt-BR')}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="tabela">
+
+<div class="linha topoTabela">
+
+<div>OC</div>
+<div>EQUIPE</div>
+<div>STATUS</div>
+<div>CI</div>
+<div>UTD</div>
+<div>TEMPO</div>
+<div>ABERTURA</div>
+
+</div>
+
+${listaOrdenada.map(d=>`
+
+<div class="linha">
+
+<div>
+${gerarNumeroOcorrencia(d.oc,d.mes)}
+</div>
+
+<div>
+${d.eq}
+</div>
+
+<div>
+
+<span class="statusBadge ${classeStatus(d.st)}">
+
+${d.st}
+
+</span>
+
+</div>
+
+<div>
+${d.st=="FINALIZADA" ? "-" : d.ci}
+</div>
+
+<div>
+${d.utd}
+</div>
+
+<div class="horas">
+${horasDecorridas(d.data,d.st)}h
+</div>
+
+<div>
+${new Date(d.data).toLocaleDateString()}
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+
+<div class="cards">
+
+<div class="cardResumo">
+<div class="cardIcone">📋</div>
+<div class="cardTexto">
+<span>Total OCs</span>
+<strong>${totalOc}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">💡</div>
+<div class="cardTexto">
+<span>CI Total</span>
+<strong>${totalCI}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">🟢</div>
+<div class="cardTexto">
+<span>Execução</span>
+<strong>${statusCount["TRABALHANDO"]}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">🚛</div>
+<div class="cardTexto">
+<span>Deslocamento</span>
+<strong>${statusCount["DESLOCAMENTO"]}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">⏳</div>
+<div class="cardTexto">
+<span>Em Espera</span>
+<strong>${statusCount["EM ESPERA"]}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">✅</div>
+<div class="cardTexto">
+<span>Finalizadas</span>
+<strong>${statusCount["FINALIZADA"]}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">🏗️</div>
+<div class="cardTexto">
+<span>TP-Obra</span>
+<strong>${processoCount["OBRA"] || 0}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">🔧</div>
+<div class="cardTexto">
+<span>Manutenção</span>
+<strong>${processoCount["MANUTENÇÃO"] || 0}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">📍</div>
+<div class="cardTexto">
+<span>Base Carpina</span>
+<strong>${baseCount["CARPINA"] || 0}</strong>
+</div>
+</div>
+
+<div class="cardResumo">
+<div class="cardIcone">📍</div>
+<div class="cardTexto">
+<span>Base Igarassu</span>
+<strong>${baseCount["IGARASSU"] || 0}</strong>
+</div>
+</div>
+
+</div>
+
+<div class="rodape">
+
+⚡ MANUTENÇÃO UTEP NORTE ⚡
+
+</div>
+
+`;
+
+mostrarTela('tela2');
+
+}
+
+function mostrarTela(nome){
+
+tela1.style.display = nome=="tela1" ? "block" : "none";
+tela2.style.display = nome=="tela2" ? "block" : "none";
+tela3.style.display = nome=="tela3" ? "block" : "none";
+
+}
+
+function voltar(){
+
+mostrarTela('tela1');
+
+}
+
+function detalhamento(){
+
+let comObs = dados.filter(d => d.obs && d.obs.trim() !== "");
+
+let listaOrdenada = ordenar([...comObs]);
+
+let dataAtual = new Date();
+
+let corpo = listaOrdenada.length === 0 ?
+`<div class="semObs">Nenhuma OC com observação registrada.</div>` :
+listaOrdenada.map(d => `
+
+<div class="obsBloco">
+
+<div class="obsCabecalho">
+<span>OC: <b>${gerarNumeroOcorrencia(d.oc,d.mes)}</b></span>
+<span>Horas em aberto: <b>${horasDecorridas(d.data,d.st)}h</b></span>
+<span>UTD: <b>${d.utd}</b></span>
+<span>Equipe: <b>${d.eq}</b></span>
+</div>
+
+<div class="obsTexto">${d.obs}</div>
+
+</div>
+
+`).join("");
+
+relatorioObs.innerHTML = `
+
+<div class="cabecalhoRelatorio">
+
+<div class="topoFlex">
+
+<div class="logoEsquerda">
+⚡
+</div>
+
+<div class="tituloCentral">
+
+<h1>
+DETALHAMENTO
+<br>
+POR OC
+</h1>
+
+<div class="infoData">
+
+📅 ${dataAtual.toLocaleDateString('pt-BR')}
+&nbsp;&nbsp;&nbsp;
+🕒 ${dataAtual.toLocaleTimeString('pt-BR')}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="tabela">
+
+${corpo}
+
+</div>
+
+<div class="rodape">
+
+⚡ MANUTENÇÃO UTEP NORTE ⚡
+
+</div>
+
+`;
+
+mostrarTela('tela3');
+
+}
+
+function gerarDetalhamento(){
+
+window.scrollTo(0,0);
+
+html2canvas(relatorioObs,{
+scale:4,
+backgroundColor:"#ffffff",
+useCORS:true,
+allowTaint:true,
+logging:false
+}).then(canvas=>{
+
+let link=document.createElement('a');
+
+link.download="detalhamento_oc.png";
+
+link.href=canvas.toDataURL("image/png");
+
+link.click();
+
+});
+
+}
+
+function gerar(){
+
+window.scrollTo(0,0);
+
+html2canvas(relatorio,{
+scale:4,
+backgroundColor:"#ffffff",
+useCORS:true,
+allowTaint:true,
+logging:false
+}).then(canvas=>{
+
+let link=document.createElement('a');
+
+link.download="relatorio.png";
+
+link.href=canvas.toDataURL("image/png");
+
+link.click();
+
+});
+
+}
+
+carregarLocal();
+
+</script>
+
+</body>
+
+</html>
